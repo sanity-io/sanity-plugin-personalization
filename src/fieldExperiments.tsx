@@ -107,7 +107,7 @@ const createFieldObjectType = ({
           {
             ...field,
             name: 'value',
-            hidden: ({parent}) => !parent?.variantID,
+            hidden: ({parent}) => !parent?.variantId,
           },
     ],
     preview: {

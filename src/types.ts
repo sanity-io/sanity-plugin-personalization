@@ -39,3 +39,21 @@ export type ArrayInputProps = ArrayOfObjectsInputProps & {
 }
 
 export type ObjectFieldWithPath = ObjectField<SchemaType> & {path: Path}
+
+export type VariantGeneric<T> = {
+  _type: string
+  variantId?: string
+  experimentId?: string
+  value?: T
+}
+
+export type ExperimentGeneric<T> = {
+  _type: string
+  default?: T
+  experimentValue?: string
+  variants?: Array<
+    {
+      _key: string
+    } & VariantGeneric<T>
+  >
+}

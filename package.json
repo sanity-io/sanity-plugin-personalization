@@ -6,6 +6,14 @@
     "sanity",
     "sanity-plugin"
   ],
+  "homepage": "https://github.com/sanity-io/sanity-plugin-personalisation#readme",
+  "bugs": {
+    "url": "https://github.com/sanity-io/sanity-plugin-personalisation/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sanity-io/sanity-plugin-personalisation.git"
+  },
   "license": "MIT",
   "author": "Jon Burbridge <jonathan.burbridge@sanity.io>",
   "sideEffects": false,

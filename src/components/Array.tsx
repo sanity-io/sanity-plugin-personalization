@@ -42,9 +42,9 @@ export const ArrayImput = (props: ArrayInputProps) => {
   }
 
   // there is probably some better was of getting the type of this?
-  const values = props.value as Value[]
+  const values = props.value as Value[] | []
 
-  const usedVariants = values.map((variant) => variant.variantId)
+  const usedVariants = values?.map((variant) => variant.variantId)
 
   return (
     <Stack space={3}>
