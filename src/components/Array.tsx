@@ -1,36 +1,39 @@
 import {Button, Inline, Stack} from '@sanity/ui'
 import {useCallback} from 'react'
 import {useFormValue} from 'sanity'
+import {uuid} from '@sanity/uuid'
 
 import {ArrayInputProps, VariantType} from '../types'
 import {useExperimentContext} from './ExperimentContext'
 
-export const ArrayImput = (props: ArrayInputProps) => {
+export const ArrayInput = (props: ArrayInputProps) => {
   const fieldPath = props.path.slice(0, -1)
-  const experimentValue = useFormValue([...fieldPath, 'experimentValue'])
+  const experimentId = useFormValue([...fieldPath, 'experimentId'])
 
   const {experiments} = useExperimentContext()
 
   const {onItemAppend, objectName} = props
 
+  console.log(props)
+
   const handleClick = useCallback(
     async (variant: VariantType) => {
       const item = {
-        _key: `${experimentValue}:${variant.id}`,
+        _key: uuid(),
         variantId: variant.id,
-        experimentId: experimentValue,
+        experimentId: experimentId,
         _type: objectName,
       }
 
       // Patch the document
       onItemAppend(item)
     },
-    [experimentValue, objectName, onItemAppend],
+    [experimentId, objectName, onItemAppend],
   )
 
   const filteredVariants =
     experiments.find((option) => {
-      return option.id === experimentValue
+      return option.id === experimentId
     })?.variants || []
 
   type Value = {

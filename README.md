@@ -150,9 +150,9 @@ export default defineConfig({
         defineField({
           name: 'featuredProduct',
           type: 'reference',
-          to: [{type: 'product'}]
-          hidden: (({document}) => !document?.title)
-        })
+          to: [{type: 'product'}],
+          hidden: ({document}) => !document?.title,
+        }),
       ],
       experiments: [experiment1, experiment2],
     }),
@@ -162,7 +162,7 @@ export default defineConfig({
 
 This would also create two new fields in your schema.
 
-- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentValue` and an array field of:
+- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field of:
 - `variantFeaturedProduct` an object field with a `reference` field called `value`, a string field called `variandId`, a `string` field called `experimentId`.
 
 Note that the name key in the field gets rewritten to value and is instead used to name the object field.
@@ -183,7 +183,6 @@ defineField({
       }
 
       const invalidVariants = experiment.variants?.filter((variant) => !variant.value)
-      console.log({invalidVariants, experiment})
 
       if (invalidVariants?.length) {
         return invalidVariants.map((item) => ({
@@ -198,7 +197,7 @@ defineField({
 
 ## Shape of stored data
 
-The custom input contains buttons which will add new array items with the experiment and variant as the \_key value. Data returned from this array will look like this:
+The custom input contains buttons which will add new array items with the experiment and variant already populated. Data returned from this array will look like this:
 
 ```json
 "title": {
@@ -206,13 +205,11 @@ The custom input contains buttons which will add new array items with the experi
   "experimentValue": "test-1",
   "variants": [
     {
-      "_key": "test-1:test-1-a",
       "experimentId": "test-1",
       "value": "asdf",
       "variantId": "test-1-a"
     },
     {
-      "_key": "test-1:test-1-b",
       "experimentId": "test-1",
       "variantId": "test-1-b",
       "value": "asdf"
@@ -224,9 +221,9 @@ The custom input contains buttons which will add new array items with the experi
 Querying data
 Using GROQ filters you can query for a specific experitment, with a fallback to default value like so:
 
-```groq
-\*[_type == "post"] {
-"title":coalesce(title.variants[_key == $experiment+':'+$variant][0].value, title.default),
+```ts
+*[_type == "post"] {
+"title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default),,
 }
 ```
 

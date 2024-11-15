@@ -8,7 +8,7 @@ import {
   SanityClient,
 } from 'sanity'
 
-import {ArrayImput} from './components/Array'
+import {ArrayInput} from './components/Array'
 import {CONFIG_DEFAULT, ExperimentProvider} from './components/ExperimentContext'
 import {ExperimentInput} from './components/ExperimentInput'
 import {VariantPreview} from './components/VariantPreview'
@@ -42,7 +42,7 @@ const createFieldType = ({
           },
       defineField({
         title: 'Experiment',
-        name: 'experimentValue',
+        name: 'experimentId',
         type: 'string',
         components: {
           input: ExperimentInput,
@@ -52,11 +52,11 @@ const createFieldType = ({
         name: 'variants',
         type: 'array',
         hidden: ({parent}) => {
-          return !parent?.experimentValue
+          return !parent?.experimentId
         },
         components: {
           input: (props: ArrayOfObjectsInputProps) => (
-            <ArrayImput {...props} objectName={objectName} />
+            <ArrayInput {...props} objectName={objectName} />
           ),
         },
         of: [
