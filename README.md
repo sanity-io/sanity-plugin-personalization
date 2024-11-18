@@ -223,7 +223,7 @@ Using GROQ filters you can query for a specific experitment, with a fallback to 
 
 ```ts
 *[_type == "post"] {
-"title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default),,
+"title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default),
 }
 ```
 
