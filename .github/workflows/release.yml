@@ -9,16 +9,15 @@ run-name: >-
 
 on:
   # Build on pushes to release branches
-  push:
-    branches: [releases]
   pull_request:
-  workflow_dispatch:
-    inputs:
-      release:
-        description: 'Publish new release'
-        required: true
-        default: true
-        type: boolean
+    branches: [releases]
+  # workflow_dispatch:
+  #   inputs:
+  #     release:
+  #       description: 'Publish new release'
+  #       required: true
+  #       default: true
+  #       type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -50,7 +49,7 @@ jobs:
     name: Semantic release
     needs: build
     # only run if opt-in during workflow_dispatch
-    if: github.event.inputs.release == 'true'
+    # if: github.event.inputs.release == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
