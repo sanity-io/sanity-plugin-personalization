@@ -10,7 +10,9 @@ run-name: >-
 on:
   # Build on pushes to release branches
   pull_request:
-    branches: [releases]
+    branches:
+      - main
+      - releases
   # workflow_dispatch:
   #   inputs:
   #     release:
