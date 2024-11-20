@@ -14,6 +14,7 @@ import {ExperimentInput} from './components/ExperimentInput'
 import {VariantPreview} from './components/VariantPreview'
 import {ExperimentType, FieldPluginConfig} from './types'
 import {flattenSchemaType} from './utils/flattenSchemaType'
+import {Experimentfield} from './components/ExperimentField'
 
 const createFieldType = ({
   field,
@@ -28,6 +29,9 @@ const createFieldType = ({
   return defineType({
     name: `experiment${usedName}`,
     type: 'object',
+    components: {
+      field: Experimentfield,
+    },
     fields: [
       typeof field === `string`
         ? // Define a simple field if all we have is the name as a string
@@ -41,11 +45,19 @@ const createFieldType = ({
             name: 'default',
           },
       defineField({
+        name: 'active',
+        type: 'boolean',
+        hidden: true,
+      }),
+      defineField({
         title: 'Experiment',
         name: 'experimentId',
         type: 'string',
         components: {
           input: ExperimentInput,
+        },
+        hidden: ({parent}) => {
+          return !parent?.active
         },
       }),
       defineField({
@@ -148,11 +160,9 @@ export const fieldLevelExperiments = definePlugin<FieldPluginConfig>((config) =>
           const flatFieldTypeNames = flattenSchemaType(props.schemaType).map(
             (field) => field.type.name,
           )
-          const hasInternationalizedArray = flatFieldTypeNames.some((name) =>
-            name.startsWith('experiment'),
-          )
+          const hasExperiment = flatFieldTypeNames.some((name) => name.startsWith('experiment'))
 
-          if (!hasInternationalizedArray) {
+          if (!hasExperiment) {
             return props.renderDefault(props)
           }
           const providerProps = {...props, experimentFieldPluginConfig: pluginConfig}
