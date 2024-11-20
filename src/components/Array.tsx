@@ -14,8 +14,6 @@ export const ArrayInput = (props: ArrayInputProps) => {
 
   const {onItemAppend, objectName} = props
 
-  console.log(props)
-
   const handleClick = useCallback(
     async (variant: VariantType) => {
       const item = {
