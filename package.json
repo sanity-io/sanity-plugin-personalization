@@ -1,5 +1,5 @@
 {
-  "name": "sanity-plugin-personalisation",
+  "name": "@sanity/personalisation-plugin",
   "version": "0.0.1",
   "description": "Plugin to help with personalisation, a/b testing when using Sanity",
   "keywords": [
