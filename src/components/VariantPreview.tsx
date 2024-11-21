@@ -26,7 +26,7 @@ export const VariantPreview = (props: PreviewProps) => {
   // "title":coalesce(select(title.experimentValue == $experiment && defined(title.variants[variantId == $variant][0]) => title.variants[variantId == $variant][0].value, null), title.default),
 
   // exp stored agaisnt variant
-  // "title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default),
+  // "title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default, title),
 
   // exp and var stored as _key
   // "title":coalesce(title.variants[_key == $experiment+':'+$variant][0].value, title.default),
