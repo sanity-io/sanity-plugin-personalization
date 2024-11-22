@@ -58,7 +58,7 @@ jobs:
       - run: yarn prepublishOnly --if-present
 
   # Will add when I add tests
-  # test: 
+  # test:
   #   needs: build
   #   # The test matrix can be skipped, in case a new release needs to be fast-tracked and tests are already passing on main
   #   if: github.event.inputs.test != 'false'
@@ -103,7 +103,7 @@ jobs:
     needs: [build]
     # only run if opt-in during workflow_dispatch
     # add back in && needs.test.result != 'failure' && needs.test.result != 'cancelled'
-    if: always() && github.event.inputs.release == 'true' && needs.build.result != 'failure' 
+    if: always() && github.event.inputs.release == 'true' && needs.build.result != 'failure'
     runs-on: ubuntu-latest
     name: Semantic release
     steps:
@@ -119,8 +119,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: npm audit signatures
         # Branches that will release new versions are defined in .releaserc.json
-        # @TODO remove --dry-run after verifying everything is good to go
-      - run: npx semantic-release --dry-run
+      - run: npx semantic-release
         # Don't allow interrupting the release step if the job is cancelled, as it can lead to an inconsistent state
         # e.g. git tags were pushed but it exited before `npm publish`
         if: always()
