@@ -83,7 +83,7 @@
   "engines": {
     "node": ">=18"
   },
-  "overrides": {
+  "resolutions": {
     "conventional-changelog-conventionalcommits": ">= 8.0.0"
   }
 }
