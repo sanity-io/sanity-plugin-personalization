@@ -1,7 +1,7 @@
 import {Button, Inline, Stack} from '@sanity/ui'
+import {uuid} from '@sanity/uuid'
 import {useCallback} from 'react'
 import {useFormValue} from 'sanity'
-import {uuid} from '@sanity/uuid'
 
 import {ArrayInputProps, VariantType} from '../types'
 import {useExperimentContext} from './ExperimentContext'

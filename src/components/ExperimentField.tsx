@@ -9,7 +9,7 @@ import {
   useDocumentOperation,
   useFormValue,
 } from 'sanity'
-type PatchStuff = {patch: Operation<[patches: any[]]>; inputId: string}
+type PatchStuff = {patch: Operation<[patches: unknown[]]>; inputId: string}
 
 const useAddExperimentAction = (
   props: DocumentFieldActionProps & PatchStuff,
