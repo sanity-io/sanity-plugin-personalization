@@ -139,7 +139,7 @@ For more control over the value field, you can pass a schema definition into the
 
 ```ts
 import {defineConfig} from 'sanity'
-import {fieldLevelExperiments} from 'sanity-plugin-personalisation'
+import {fieldLevelExperiments} from '@sanity/personalisation-plugin'
 
 export default defineConfig({
   //...
