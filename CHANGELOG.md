@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.0.0...v1.0.1) (2024-11-25)
+
+### Bug Fixes
+
+- update relase workflow ([a991386](https://github.com/sanity-io/sanity-plugin-personalisation/commit/a991386ee97142ec91f1a01a81acd135ccbe74ef))
+
 ## 1.0.0 (2024-11-25)
 
 ### Features
