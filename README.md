@@ -1,4 +1,4 @@
-# sanity-plugin-personalisation
+# @sanity/personalisation-plugin
 
 > This is a **Sanity Studio v3** plugin.
 
@@ -7,7 +7,7 @@ This plugin allows users to add a/b testing experiemtnts on a field level basis
 ## Installation
 
 ```sh
-npm install sanity-plugin-personalisation
+npm install @sanity/personalisation-plugin
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ Add it as a plugin in `sanity.config.ts` (or .js):
 
 ```ts
 import {defineConfig} from 'sanity'
-import {fieldLevelExperiments} from 'sanity-plugin-personalisation'
+import {fieldLevelExperiments} from '@sanity/personalisation-plugin'
 
 const experiment1 = {
   id: '123',
@@ -238,7 +238,6 @@ with default configuration for build & watch scripts.
 
 See [Testing a plugin in Sanity Studio](https://github.com/sanity-io/plugin-kit#testing-a-plugin-in-sanity-studio)
 on how to run this plugin with hotreload in the studio.
-
 
 ### Release new version
 
