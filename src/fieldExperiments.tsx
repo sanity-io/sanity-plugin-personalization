@@ -10,17 +10,19 @@ import {
 
 import {ArrayInput} from './components/Array'
 import {CONFIG_DEFAULT, ExperimentProvider} from './components/ExperimentContext'
+import {Experimentfield} from './components/ExperimentField'
 import {ExperimentInput} from './components/ExperimentInput'
 import {VariantPreview} from './components/VariantPreview'
 import {ExperimentType, FieldPluginConfig} from './types'
 import {flattenSchemaType} from './utils/flattenSchemaType'
-import {Experimentfield} from './components/ExperimentField'
 
 const createFieldType = ({
   field,
 }: {
   field: string | FieldDefinition
-  experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
+  experiments:
+    | ExperimentType[]
+    | ((client: SanityClient, secret?: string) => Promise<ExperimentType[]>)
 }) => {
   const typeName = typeof field === `string` ? field : field.name
   const usedName = String(typeName[0]).toUpperCase() + String(typeName).slice(1)

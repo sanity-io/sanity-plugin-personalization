@@ -1,3 +1,4 @@
+import {Dispatch, SetStateAction} from 'react'
 import {
   ArrayOfObjectsInputProps,
   FieldDefinition,
@@ -20,7 +21,9 @@ export type ExperimentType = {
 
 export type FieldPluginConfig = {
   fields: (string | FieldDefinition)[]
-  experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
+  experiments:
+    | ExperimentType[]
+    | ((client: SanityClient, secret?: string) => Promise<ExperimentType[]>)
   apiVersion?: string
 }
 
@@ -32,6 +35,8 @@ export type VariantPreviewProps = PreviewProps & {
 
 export type ExperimentContextProps = Required<FieldPluginConfig> & {
   experiments: ExperimentType[]
+  setSecret: Dispatch<SetStateAction<string | undefined>>
+  secret: string | undefined
 }
 
 export type ArrayInputProps = ArrayOfObjectsInputProps & {
@@ -56,4 +61,125 @@ export type ExperimentGeneric<T> = {
       _key: string
     } & VariantGeneric<T>
   >
+}
+
+export type GrowthbookExperiment = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  name: string
+  project: string
+  hypothesis: string
+  description: string
+  tags: [string]
+  owner: string
+  archived: boolean
+  status: string
+  autoRefresh: boolean
+  hashAttribute: string
+  fallbackAttribute: string
+  hashVersion: number
+  disableStickyBucketing: boolean
+  bucketVersion: number
+  minBucketVersion: number
+  variations: [
+    {
+      variationId: string
+      key: string
+      name: string
+      description: string
+      screenshots: [string]
+    },
+  ]
+  phases: [
+    {
+      name: string
+      dateStarted: string
+      dateEnded: string
+      reasonForStopping: string
+      seed: string
+      coverage: 0
+      trafficSplit: [
+        {
+          variationId: string
+          weight: 0
+        },
+      ]
+      namespace: {
+        namespaceId: string
+        range: []
+      }
+      targetingCondition: string
+      savedGroupTargeting: [
+        {
+          matchType: string
+          savedGroups: [string]
+        },
+      ]
+    },
+  ]
+  settings: {
+    datasourceId: string
+    assignmentQueryId: string
+    experimentId: string
+    segmentId: string
+    queryFilter: string
+    inProgressConversions: string
+    attributionModel: string
+    statsEngine: string
+    regressionAdjustmentEnabled: boolean
+    goals: [
+      {
+        metricId: string
+        overrides: {
+          delayHours: 0
+          windowHours: 0
+          window: string
+          winRiskThreshold: 0
+          loseRiskThreshold: 0
+        }
+      },
+    ]
+    secondaryMetrics: [
+      {
+        metricId: string
+        overrides: {
+          delayHours: 0
+          windowHours: 0
+          window: string
+          winRiskThreshold: 0
+          loseRiskThreshold: 0
+        }
+      },
+    ]
+    guardrails: [
+      {
+        metricId: string
+        overrides: {
+          delayHours: 0
+          windowHours: 0
+          window: string
+          winRiskThreshold: 0
+          loseRiskThreshold: 0
+        }
+      },
+    ]
+    activationMetric: {
+      metricId: string
+      overrides: {
+        delayHours: 0
+        windowHours: 0
+        window: string
+        winRiskThreshold: 0
+        loseRiskThreshold: 0
+      }
+    }
+  }
+  resultSummary: {
+    status: string
+    winner: string
+    conclusions: string
+    releasedVariationId: string
+    excludeFromPayload: boolean
+  }
 }

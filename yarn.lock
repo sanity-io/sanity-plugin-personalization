@@ -2946,6 +2946,14 @@
     conventional-changelog-conventionalcommits "^8.0.0"
     semantic-release-license "^1.0.3"
 
+"@sanity/studio-secrets@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@sanity/studio-secrets/-/studio-secrets-3.0.0.tgz#04f817082a715d27f96ac900a58f158bb30f55a2"
+  integrity sha512-3UUlxAeJsP+paV+wfYdO0mW6oeGir7CDUmXv7CXXX/SRn9IhAsZKXel6aVPYU7SeDwsXmA0HHZEB3vmkTqt3dw==
+  dependencies:
+    "@sanity/incompatible-plugin" "^1.0.4"
+    "@sanity/ui" "^2.1.4"
+
 "@sanity/telemetry@^0.7.7":
   version "0.7.9"
   resolved "https://registry.yarnpkg.com/@sanity/telemetry/-/telemetry-0.7.9.tgz#d8f0a65955021bf3adafccfeb6679a1b0bf52eb6"
@@ -2971,7 +2979,7 @@
     "@sanity/client" "^6.22.5"
     "@types/react" "^18.3.5"
 
-"@sanity/ui@^2.8.19", "@sanity/ui@^2.8.23", "@sanity/ui@^2.8.24":
+"@sanity/ui@^2.1.4", "@sanity/ui@^2.8.19", "@sanity/ui@^2.8.23", "@sanity/ui@^2.8.24":
   version "2.8.25"
   resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-2.8.25.tgz#1e3c0044264bf5db3c07b13e162db2ad18eecad2"
   integrity sha512-DOelQQq5htbV9THZwcASdHAiA2wdPL/zuvrrurC8PPMGzMxHJqqMjdXLrd2zdckTgEjXcgn6rPEFZ/YY6v5CSQ==
