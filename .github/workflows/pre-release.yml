@@ -119,7 +119,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: npm audit signatures
         # set current branch 
-      - run: echo format('{"extends": "@sanity/semantic-release-preset","branches": ["main", {"name": "canary", "prerelease": true}, {“name”: "{0}"", “prerelease”: true}]}',github.ref_name) > .releaserc.json && npx semantic-release
+      - run: echo format('{"extends": "@sanity/semantic-release-preset","branches": ["main", {"name": "canary", "prerelease": true}, {“name”: "{0}", “prerelease”: true}]}',github.ref_name) > .releaserc.json && npx semantic-release
         # Don't allow interrupting the release step if the job is cancelled, as it can lead to an inconsistent state
         # e.g. git tags were pushed but it exited before `npm publish`
         if: always()
