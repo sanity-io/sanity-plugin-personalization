@@ -2,7 +2,11 @@
 
 > This is a **Sanity Studio v3** plugin.
 
-This plugin allows users to add a/b testing experiemtnts on a field level basis
+This plugin allows users to add a/b testing experiments on a field level basis
+
+For a/b/n testing / experimentation  we need to group know what we are testing and the different variations on the same experiment.
+For this plugin you need to defined the experiments you are running and the variations thoses experiments have. you can either do this in the plugin config, or you can use and async function to retrevie the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset. 
+
 
 ## Installation
 
@@ -62,10 +66,10 @@ export default defineConfig({
 
 This will register two new fields to the schema., based on the setting passed intto `fields:`
 
-- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentValue` and an array field of:
-- `varirantsString` an object field with a `string` field called `value`, a string field called `variandId`, a `string` field called `experimentId`.
+- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentId` and an array field of type:
+- `varirantsString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `experimentId`.
 
-Use them in your schema like this:
+Use the experiment field in your schema like this:
 
 ```ts
 //for Example in post.ts
@@ -162,7 +166,7 @@ export default defineConfig({
 
 This would also create two new fields in your schema.
 
-- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field of:
+- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field of type:
 - `variantFeaturedProduct` an object field with a `reference` field called `value`, a string field called `variandId`, a `string` field called `experimentId`.
 
 Note that the name key in the field gets rewritten to value and is instead used to name the object field.
