@@ -82,9 +82,9 @@ export const Experimentfield = (props: ObjectFieldProps) => {
 
   const oldActions = props.actions || []
 
-  const wihtActionProps = {
+  const withActionProps = {
     ...props,
     actions: [newActions({patch, inputId, active}), ...oldActions],
   }
-  return props.renderDefault(wihtActionProps)
+  return props.renderDefault(withActionProps)
 }

@@ -2,11 +2,24 @@
 
 > This is a **Sanity Studio v3** plugin.
 
-This plugin allows users to add a/b testing experiments on a field level basis
+This plugin allows users to add a/b/n testing experiments to individual fields.
 
-For a/b/n testing / experimentation  we need to group know what we are testing and the different variations on the same experiment.
-For this plugin you need to defined the experiments you are running and the variations thoses experiments have. you can either do this in the plugin config, or you can use and async function to retrevie the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset. 
+For this plugin you need to defined the experiments you are running and the variations those experiments have. Each experiment needs to have an id,a label, and an array of variants that have an id and a label. You can either pass an array of experiments in the plugin config, or you can use and async function to retrieve the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset. 
 
+Once configured you can query the values using the ids of the experiment and variant
+
+- [@sanity/personalisation-plugin](#@sanity/personalisation-plugin)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Loading Experiments](#loading-experiments)
+  - [Using complex field configurations](#using-complex-field-configurations)
+  - [Validation of individual array items](#validation-of-individual-array-items)
+  - [Shape of stored data](#shape-of-stored-data)
+  - [Querying data](#querying-data)
+  - [License](#license)
+  - [Develop \& test](#develop--test)
+    - [Release new version](#release-new-version)
+  - [License](#license-1)
 
 ## Installation
 
