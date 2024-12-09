@@ -4,25 +4,23 @@ import {
   defineDocumentFieldAction,
   DocumentFieldActionItem,
   DocumentFieldActionProps,
+  FormPatch,
   ObjectFieldProps,
-  Operation,
-  useDocumentOperation,
-  useFormValue,
+  PatchEvent,
+  set,
+  unset,
 } from 'sanity'
-type PatchStuff = {patch: Operation<[patches: unknown[]]>; inputId: string}
+type PatchStuff = {onChange: (patch: FormPatch | FormPatch[] | PatchEvent) => void; inputId: string}
 
 const useAddExperimentAction = (
   props: DocumentFieldActionProps & PatchStuff,
 ): DocumentFieldActionItem => {
   const patchActiveEvent = useMemo(() => {
-    const activeId = `${props.inputId}.active`
-    return {
-      set: {[activeId]: true},
-    }
-  }, [props])
+    return set(true, ['active'])
+  }, [])
   const handleAction = useCallback(() => {
-    props.patch.execute([patchActiveEvent])
-  }, [patchActiveEvent, props.patch])
+    props.onChange([patchActiveEvent])
+  }, [patchActiveEvent, props])
 
   return {
     title: 'Add experiment',
@@ -37,22 +35,18 @@ const useRemoveExperimentAction = (
   props: DocumentFieldActionProps & PatchStuff,
 ): DocumentFieldActionItem => {
   const patchActiveEvent = useMemo(() => {
-    const activeId = `${props.inputId}.active`
-    return {
-      set: {[activeId]: false},
-    }
+    const activeId = ['active']
+    return set(false, activeId)
   }, [props])
 
   const patchClearEvent = useMemo(() => {
-    const experimentId = `${props.inputId}.experimentId`
-    const variants = `${props.inputId}.variants`
-    return {
-      unset: [experimentId, variants],
-    }
+    const experimentId = ['experimentId'] // `${props.inputId}.experimentId`
+    const variants = ['variants'] //`${props.inputId}.variants`
+    return [unset(experimentId), unset(variants)]
   }, [props])
   const handleAction = useCallback(() => {
-    props.patch.execute([patchActiveEvent, patchClearEvent])
-  }, [patchActiveEvent, patchClearEvent, props.patch])
+    props.onChange([patchActiveEvent, ...patchClearEvent])
+  }, [patchActiveEvent, patchClearEvent, props])
 
   return {
     title: 'Remove experiment',
@@ -63,20 +57,19 @@ const useRemoveExperimentAction = (
   }
 }
 
-const newActions = ({patch, inputId, active}: PatchStuff & {active?: boolean}) =>
+const newActions = ({onChange, inputId, active}: PatchStuff & {active?: boolean}) =>
   active
     ? defineDocumentFieldAction({
         name: 'Experiment',
-        useAction: (props) => useRemoveExperimentAction({...props, patch, inputId}),
+        useAction: (props) => useRemoveExperimentAction({...props, onChange, inputId}),
       })
     : defineDocumentFieldAction({
         name: 'Experiment',
-        useAction: (props) => useAddExperimentAction({...props, patch, inputId}),
+        useAction: (props) => useAddExperimentAction({...props, onChange, inputId}),
       })
 
 export const Experimentfield = (props: ObjectFieldProps) => {
-  const id = useFormValue(['_id']) as string
-  const {patch} = useDocumentOperation(id.replace('drafts.', ''), props.schemaType.name)
+  const {onChange} = props.inputProps
   const {inputId} = props
   const active = props.value?.active as boolean | undefined
 
@@ -84,7 +77,7 @@ export const Experimentfield = (props: ObjectFieldProps) => {
 
   const withActionProps = {
     ...props,
-    actions: [newActions({patch, inputId, active}), ...oldActions],
+    actions: [newActions({onChange, inputId, active}), ...oldActions],
   }
   return props.renderDefault(withActionProps)
 }
