@@ -4,7 +4,9 @@
 
 This plugin allows users to add a/b/n testing experiments to individual fields.
 
-For this plugin you need to defined the experiments you are running and the variations those experiments have. Each experiment needs to have an id,a label, and an array of variants that have an id and a label. You can either pass an array of experiments in the plugin config, or you can use and async function to retrieve the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset. 
+![image](./overview.gif)
+
+For this plugin you need to defined the experiments you are running and the variations those experiments have. Each experiment needs to have an id,a label, and an array of variants that have an id and a label. You can either pass an array of experiments in the plugin config, or you can use and async function to retrieve the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset.
 
 Once configured you can query the values using the ids of the experiment and variant
 
