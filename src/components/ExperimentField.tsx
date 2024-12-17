@@ -1,5 +1,6 @@
-import {AddIcon, CloseIcon} from '@sanity/icons'
+import {CloseIcon} from '@sanity/icons'
 import {useCallback, useMemo} from 'react'
+import {GiSoapExperiment} from 'react-icons/gi'
 import {
   defineDocumentFieldAction,
   DocumentFieldActionItem,
@@ -25,7 +26,7 @@ const useAddExperimentAction = (
   return {
     title: 'Add experiment',
     type: 'action',
-    icon: AddIcon,
+    icon: GiSoapExperiment,
     onAction: handleAction,
     renderAsButton: true,
   }
@@ -37,13 +38,13 @@ const useRemoveExperimentAction = (
   const patchActiveEvent = useMemo(() => {
     const activeId = ['active']
     return set(false, activeId)
-  }, [props])
+  }, [])
 
   const patchClearEvent = useMemo(() => {
     const experimentId = ['experimentId'] // `${props.inputId}.experimentId`
     const variants = ['variants'] //`${props.inputId}.variants`
     return [unset(experimentId), unset(variants)]
-  }, [props])
+  }, [])
   const handleAction = useCallback(() => {
     props.onChange([patchActiveEvent, ...patchClearEvent])
   }, [patchActiveEvent, patchClearEvent, props])
@@ -68,16 +69,16 @@ const newActions = ({onChange, inputId, active}: PatchStuff & {active?: boolean}
         useAction: (props) => useAddExperimentAction({...props, onChange, inputId}),
       })
 
-export const Experimentfield = (props: ObjectFieldProps) => {
+export const ExperimentField = (props: ObjectFieldProps) => {
   const {onChange} = props.inputProps
   const {inputId} = props
   const active = props.value?.active as boolean | undefined
 
   const oldActions = props.actions || []
 
-  const wihtActionProps = {
+  const withActionProps = {
     ...props,
     actions: [newActions({onChange, inputId, active}), ...oldActions],
   }
-  return props.renderDefault(wihtActionProps)
+  return props.renderDefault(withActionProps)
 }
