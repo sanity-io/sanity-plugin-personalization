@@ -7,18 +7,21 @@ import {getExperiments} from './utils/growthbook'
 
 type GrowthbookABConfig = {
   fields: (string | FieldDefinition)[]
+  environment: string
+  project?: string
 }
 
 export const growthbookFieldLevel = definePlugin<GrowthbookABConfig>((config) => {
-  const {fields} = config
+  const {fields, environment, project} = config
   return {
     name: 'sanity-growthbook-personalistaion-plugin-field-level-experiments',
     plugins: [
       fieldLevelExperiments({
         fields,
-        experiments: getExperiments,
+        experiments: (client) => getExperiments(client, environment, project),
       }),
     ],
+
     form: {
       components: {
         input: (props) => {

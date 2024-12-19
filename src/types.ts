@@ -183,3 +183,58 @@ export type GrowthbookExperiment = {
     excludeFromPayload: boolean
   }
 }
+
+export type GrowthbookFeature = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  archived: boolean
+  description: string
+  owner: string
+  project: string
+  valueType: string
+  defaultValue: string
+  tags: string[]
+  environments: {
+    [key: string]: {
+      enabled: boolean
+      defaultValue: string
+      rules: {
+        description: string
+        condition: string
+        savedGroupTargeting: {matchType: string; savedGroups: string[]}[]
+        id: string
+        enabled: boolean
+        type: string
+        value: string
+        variations: {value: string; variationId: string}[]
+      }[]
+      definition: string
+      draft: {
+        enabled: boolean
+        defaultValue: string
+        rules: {
+          description: string
+          condition: string
+          savedGroupTargeting: {matchType: string; savedGroups: string[]}[]
+          id: string
+          enabled: boolean
+          type: string
+          value: string
+          variations: {value: string; variationId: string}[]
+        }[]
+        definition: string
+      }
+    }
+  }
+  prerequisites: {
+    parentId: string
+    parentCondition: string
+  }[]
+  revision: {
+    version: number
+    comment: string
+    date: string
+    publishedBy: string
+  }
+}

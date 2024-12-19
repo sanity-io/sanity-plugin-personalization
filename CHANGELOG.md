@@ -12,6 +12,16 @@ All notable changes to this project will be documented in this file. See
 - added growthbook flied experiments as a plugin ([d28d2cc](https://github.com/sanity-io/sanity-plugin-personalisation/commit/d28d2cc7875c2addbfb749f55e69221822e035f5))
 - allow canary branch to make releases ([936068d](https://github.com/sanity-io/sanity-plugin-personalisation/commit/936068dd392074c62821f5ab2ba4bbcfb34a9489))
 
+## [1.1.0](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.0.3...v1.1.0) (2024-12-09)
+
+### Features
+
+- allow canary branch to make releases ([936068d](https://github.com/sanity-io/sanity-plugin-personalisation/commit/936068dd392074c62821f5ab2ba4bbcfb34a9489))
+
+### Bug Fixes
+
+- use onchagne from props rather than document operation for patch ([b61cdce](https://github.com/sanity-io/sanity-plugin-personalisation/commit/b61cdce12e470125fe70293bce983f48d091ade6))
+
 ## [1.0.3](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.0.2...v1.0.3) (2024-11-26)
 
 ### Bug Fixes
