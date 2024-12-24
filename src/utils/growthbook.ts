@@ -2,10 +2,20 @@ import {SanityClient} from 'sanity'
 
 import {ExperimentType, GrowthbookFeature} from '../types'
 
+const getBooleanConversion = (value: string) => {
+  if (value === 'true') {
+    return 'Variant'
+  } else if (value === 'false') {
+    return 'Control'
+  }
+  return value
+}
+
 export const getExperiments = async (
   client: SanityClient,
   environment: string,
   project?: string,
+  convertBooleans?: boolean,
 ) => {
   const query = `*[_id == 'secrets.growthbook'][0].secrets.apiKey`
 
@@ -39,8 +49,8 @@ export const getExperiments = async (
         return undefined
       }
       const variations = experiments?.variations.map((variant) => ({
-        id: variant.value,
-        label: variant.value,
+        id: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
+        label: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
       }))
 
       return {id: feature.id, label: feature.id, variants: variations}

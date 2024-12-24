@@ -9,16 +9,17 @@ type GrowthbookABConfig = {
   fields: (string | FieldDefinition)[]
   environment: string
   project?: string
+  convertBooleans?: boolean
 }
 
 export const growthbookFieldLevel = definePlugin<GrowthbookABConfig>((config) => {
-  const {fields, environment, project} = config
+  const {fields, environment, project, convertBooleans} = config
   return {
     name: 'sanity-growthbook-personalistaion-plugin-field-level-experiments',
     plugins: [
       fieldLevelExperiments({
         fields,
-        experiments: (client) => getExperiments(client, environment, project),
+        experiments: (client) => getExperiments(client, environment, project, convertBooleans),
       }),
     ],
 
