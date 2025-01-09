@@ -5,22 +5,11 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [1.2.0-growthbook.1](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.1.0...v1.2.0-growthbook.1) (2024-12-19)
-
-### Features
-
-- added growthbook flied experiments as a plugin ([d28d2cc](https://github.com/sanity-io/sanity-plugin-personalisation/commit/d28d2cc7875c2addbfb749f55e69221822e035f5))
+## [1.1.1](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.1.0...v1.1.1) (2025-01-02)
 
 ### Bug Fixes
 
-- get experiments from feature flags for growthbook and store values that will be used by FE ([eb40e0b](https://github.com/sanity-io/sanity-plugin-personalisation/commit/eb40e0baeeb536cdf6a74f14dd5007c16e041426))
-
-## [1.1.0-growthbook.1](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.0.3...v1.1.0-growthbook.1) (2024-11-29)
-
-### Features
-
-- added growthbook flied experiments as a plugin ([d28d2cc](https://github.com/sanity-io/sanity-plugin-personalisation/commit/d28d2cc7875c2addbfb749f55e69221822e035f5))
-- allow canary branch to make releases ([936068d](https://github.com/sanity-io/sanity-plugin-personalisation/commit/936068dd392074c62821f5ab2ba4bbcfb34a9489))
+- remove unneeded comments ([57d3d9a](https://github.com/sanity-io/sanity-plugin-personalisation/commit/57d3d9a16ed39296ca5d28a9d997e6856798c143))
 
 ## [1.1.0](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.0.3...v1.1.0) (2024-12-09)
 

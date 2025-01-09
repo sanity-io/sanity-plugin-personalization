@@ -10,7 +10,7 @@ import {
 
 import {ArrayInput} from './components/Array'
 import {CONFIG_DEFAULT, ExperimentProvider} from './components/ExperimentContext'
-import {Experimentfield} from './components/ExperimentField'
+import {ExperimentField} from './components/ExperimentField'
 import {ExperimentInput} from './components/ExperimentInput'
 import {VariantPreview} from './components/VariantPreview'
 import {ExperimentType, FieldPluginConfig} from './types'
@@ -32,7 +32,7 @@ const createFieldType = ({
     name: `experiment${usedName}`,
     type: 'object',
     components: {
-      field: Experimentfield,
+      field: ExperimentField,
     },
     fields: [
       typeof field === `string`

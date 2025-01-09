@@ -1,5 +1,6 @@
-import {AddIcon, CloseIcon} from '@sanity/icons'
-import {ReactElement, useCallback, useMemo} from 'react'
+import {CloseIcon} from '@sanity/icons'
+import {useCallback, useMemo} from 'react'
+import {GiSoapExperiment} from 'react-icons/gi'
 import {
   defineDocumentFieldAction,
   DocumentFieldActionItem,
@@ -25,7 +26,7 @@ const useAddExperimentAction = (
   return {
     title: 'Add experiment',
     type: 'action',
-    icon: AddIcon,
+    icon: GiSoapExperiment,
     onAction: handleAction,
     renderAsButton: true,
   }
@@ -68,16 +69,16 @@ const newActions = ({onChange, inputId, active}: PatchStuff & {active?: boolean}
         useAction: (props) => useAddExperimentAction({...props, onChange, inputId}),
       })
 
-export const Experimentfield = (props: ObjectFieldProps): ReactElement => {
+export const ExperimentField = (props: ObjectFieldProps) => {
   const {onChange} = props.inputProps
   const {inputId} = props
   const active = props.value?.active as boolean | undefined
 
   const oldActions = props.actions || []
 
-  const wihtActionProps = {
+  const withActionProps = {
     ...props,
     actions: [newActions({onChange, inputId, active}), ...oldActions],
   }
-  return props.renderDefault(wihtActionProps)
+  return props.renderDefault(withActionProps)
 }
