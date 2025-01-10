@@ -2551,6 +2551,11 @@
   dependencies:
     react-compiler-runtime "19.0.0-beta-201e55d-20241215"
 
+"@sanity/icons@^3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@sanity/icons/-/icons-3.5.7.tgz#de54fb2bce392e677dd49d8b587d62fd7c4b5263"
+  integrity sha512-Gdqh1Cst/GL2RF23Ztx14hFEOBltK7PYMDHTi83TQ4Vq2/W0rhhMTVlaAopb4MgnUBwzISHRLD85SuvDMi9SuA==
+
 "@sanity/image-url@^1.0.2":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@sanity/image-url/-/image-url-1.1.0.tgz#f26905ef5bdd27165b0f04d8571eb75dc7cdf50a"
@@ -2855,6 +2860,20 @@
   dependencies:
     "@sanity/client" "^6.24.1"
     "@types/react" "^18.3.5"
+
+"@sanity/ui@^2.1.4":
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-2.11.1.tgz#cd9d9ef510793dfe8f52e845e143ea1e2de0a4af"
+  integrity sha512-aO9+dIlwua6QuQfE5O8WF5gb4BUUyunzK2jmT1g/EVovxhkdBOHbmx2bNfw/xNOcSoL0X7ETnKUW4qdR+Hn2TQ==
+  dependencies:
+    "@floating-ui/react-dom" "^2.1.2"
+    "@sanity/color" "^3.0.6"
+    "@sanity/icons" "^3.5.7"
+    csstype "^3.1.3"
+    framer-motion "^11.16.0"
+    react-compiler-runtime "19.0.0-beta-55955c9-20241229"
+    react-refractor "^2.2.0"
+    use-effect-event "^1.0.2"
 
 "@sanity/ui@^2.10.7", "@sanity/ui@^2.8.19", "@sanity/ui@^2.9.0", "@sanity/ui@^2.9.1":
   version "2.10.11"
@@ -5909,6 +5928,15 @@ framer-motion@^11.15.0:
     motion-utils "^11.14.3"
     tslib "^2.4.0"
 
+framer-motion@^11.16.0:
+  version "11.16.3"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-11.16.3.tgz#d93b53146141299358e28ab56ec211f59a2513d4"
+  integrity sha512-4TN2TRKfc/t3WC7QJF349Oa2UVnMmIC+IOzb1jt4JMoqjmI7TO6ATnjlKs+hpMxCkDDwt7q5V8azMidm4UYtRg==
+  dependencies:
+    motion-dom "^11.16.3"
+    motion-utils "^11.16.0"
+    tslib "^2.4.0"
+
 from2@^2.1.0, from2@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/from2/-/from2-2.3.0.tgz#8bfb5502bde4a4d36cfdeea007fcca21d7e382af"
@@ -8232,10 +8260,22 @@ motion-dom@^11.14.3:
   resolved "https://registry.yarnpkg.com/motion-dom/-/motion-dom-11.14.3.tgz#725c72c0f1d0b632e42fdd8d13b69ecf9fe202c0"
   integrity sha512-lW+D2wBy5vxLJi6aCP0xyxTxlTfiu+b+zcpVbGVFUxotwThqhdpPRSmX8xztAgtZMPMeU0WGVn/k1w4I+TbPqA==
 
+motion-dom@^11.16.3:
+  version "11.16.3"
+  resolved "https://registry.yarnpkg.com/motion-dom/-/motion-dom-11.16.3.tgz#a7a60956b17d0eea023a8a5ce489a8087edbb774"
+  integrity sha512-v9Xf2bknUWW7WQajIVo2limfcKlxYv/dcGfB2Vx5h8cswOzP4IvJK21UXz4P37e8G0HstDoW4XRkrPIm737lfw==
+  dependencies:
+    motion-utils "^11.16.0"
+
 motion-utils@^11.14.3:
   version "11.14.3"
   resolved "https://registry.yarnpkg.com/motion-utils/-/motion-utils-11.14.3.tgz#cd4a413463739498411f82abb67b3dd58768b0f8"
   integrity sha512-Xg+8xnqIJTpr0L/cidfTTBFkvRw26ZtGGuIhA94J9PQ2p4mEa06Xx7QVYZH0BP+EpMSaDlu+q0I0mmvwADPsaQ==
+
+motion-utils@^11.16.0:
+  version "11.16.0"
+  resolved "https://registry.yarnpkg.com/motion-utils/-/motion-utils-11.16.0.tgz#e75865442278be49e411ca9105c9139edc572811"
+  integrity sha512-ngdWPjg31rD4WGXFi0eZ00DQQqKKu04QExyv/ymlC+3k+WIgYVFbt6gS5JsFPbJODTF/r8XiE/X+SsoT9c0ocw==
 
 ms@2.0.0:
   version "2.0.0"
@@ -9615,6 +9655,11 @@ react-compiler-runtime@19.0.0-beta-37ed2a7-20241206:
   version "19.0.0-beta-37ed2a7-20241206"
   resolved "https://registry.yarnpkg.com/react-compiler-runtime/-/react-compiler-runtime-19.0.0-beta-37ed2a7-20241206.tgz#f05231928f2daf9ff5ff9b63e5861161de2c3e6d"
   integrity sha512-9e6rCpVylr9EnVocgYAjft7+2v01BDpajeHKRoO+oc9pKcAMTpstHtHvE/TSVbyf4FvzCGjfKcfHM9XGTXI6Tw==
+
+react-compiler-runtime@19.0.0-beta-55955c9-20241229:
+  version "19.0.0-beta-55955c9-20241229"
+  resolved "https://registry.yarnpkg.com/react-compiler-runtime/-/react-compiler-runtime-19.0.0-beta-55955c9-20241229.tgz#6847fc12fad91e28aa3953b5c8909cd9f1b80884"
+  integrity sha512-I8niUyydqnPVMjqsOEfFwiRlWbndSjgwGhbm5GZuKev3b0HAcUAqAoHNIpp0XSHInlwfn4Zvtbva5TLupEOw+Q==
 
 react-copy-to-clipboard@^5.0.4:
   version "5.1.0"

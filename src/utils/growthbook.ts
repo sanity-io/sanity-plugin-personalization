@@ -4,9 +4,9 @@ import {ExperimentType, GrowthbookFeature} from '../types'
 
 const getBooleanConversion = (value: string) => {
   if (value === 'true') {
-    return 'Variant'
+    return 'variant'
   } else if (value === 'false') {
-    return 'Control'
+    return 'control'
   }
   return value
 }
