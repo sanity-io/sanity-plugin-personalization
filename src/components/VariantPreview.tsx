@@ -1,5 +1,12 @@
 import {useEffect, useState} from 'react'
-import {isReference, ObjectSchemaType, PreviewProps, ReferenceSchemaType, useClient} from 'sanity'
+import {
+  isImage,
+  isReference,
+  ObjectSchemaType,
+  PreviewProps,
+  ReferenceSchemaType,
+  useClient,
+} from 'sanity'
 
 import {VariantPreviewProps} from '../types'
 import {useExperimentContext} from './ExperimentContext'
@@ -49,7 +56,7 @@ export const VariantPreview = (props: PreviewProps) => {
         setMedia(previewContent?.media || selectFields.media)
         return setSubtitle(previewContent?.title || (selectFields?.title as string))
       }
-      if (value?._type === 'image') {
+      if (isImage(value)) {
         setMedia(value)
       }
       return ''
