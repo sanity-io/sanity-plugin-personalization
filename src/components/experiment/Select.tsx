@@ -4,7 +4,7 @@ import {FormPatch, PatchEvent, Path, StringInputProps} from 'sanity'
 
 import {SelectOption} from './ExperimentInput'
 
-export const Select = (
+export const ExperimentSelect = (
   props: StringInputProps & {
     listOptions: SelectOption[]
     handleChange: (

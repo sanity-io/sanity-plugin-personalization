@@ -23,6 +23,11 @@ export type FieldPluginConfig = {
   experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
   apiVersion?: string
 }
+export type PersonalisationPluginConfig = {
+  fields: (string | FieldDefinition)[]
+  variants: VariantType[] | ((client: SanityClient) => Promise<VariantType[]>)
+  apiVersion?: string
+}
 
 export type VariantPreviewProps = Omit<PreviewProps, 'SchemaType'> & {
   experiment: string
@@ -33,6 +38,10 @@ export type VariantPreviewProps = Omit<PreviewProps, 'SchemaType'> & {
 
 export type ExperimentContextProps = Required<FieldPluginConfig> & {
   experiments: ExperimentType[]
+}
+
+export type PersonalistaionContextProps = Required<PersonalisationPluginConfig> & {
+  variants: VariantType[]
 }
 
 export type ArrayInputProps = ArrayOfObjectsInputProps & {

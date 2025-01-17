@@ -8,30 +8,27 @@ import {
   useClient,
 } from 'sanity'
 
-import {VariantPreviewProps} from '../types'
-import {useExperimentContext} from './ExperimentContext'
+import {VariantPreviewProps} from '../../types'
+import {usePersonalistaionContext} from './PersonalisationContext'
 
-export const VariantPreview = (props: PreviewProps) => {
+export const PersonalisationVariantPreview = (props: PreviewProps) => {
   const [subtitle, setSubtitle] = useState<string | undefined>(undefined)
   const [title, setTitle] = useState<string | undefined>(undefined)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [media, setMedia] = useState<any>(undefined)
   const client = useClient({apiVersion: '2025-01-01'})
-  const {experiments} = useExperimentContext()
+  const {variants} = usePersonalistaionContext()
 
-  const {experiment, variant, value} = props as VariantPreviewProps
+  const {variant, value} = props as VariantPreviewProps
+  // console.log(variant, value)
 
-  const selectedExperiment = experiments.find((experimentItem) => {
-    return experimentItem.id === experiment
-  })
-
-  const selectedVariant = selectedExperiment?.variants.find((variantItem) => {
+  const selectedVariant = variants.find((variantItem) => {
     return variantItem.id === variant
   })
 
   useEffect(() => {
-    const getSubtitle = async () => {
-      setTitle(`${selectedExperiment?.label} - ${selectedVariant?.label}`)
+    const getPrevieProps = async () => {
+      setTitle(selectedVariant?.label)
       if (typeof value === 'string') {
         return setSubtitle(value)
       }
@@ -61,8 +58,8 @@ export const VariantPreview = (props: PreviewProps) => {
       }
       return ''
     }
-    getSubtitle()
-  }, [value, client, selectedExperiment?.label, selectedVariant?.label, props.schemaType])
+    getPrevieProps()
+  }, [value, client, selectedVariant, props.schemaType])
 
   const previewProps = {
     ...props,

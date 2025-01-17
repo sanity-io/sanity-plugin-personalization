@@ -9,9 +9,9 @@ import {
   useFormValue,
 } from 'sanity'
 
-import {VariantType} from '../types'
+import {VariantType} from '../../types'
 import {useExperimentContext} from './ExperimentContext'
-import {Select} from './Select'
+import {ExperimentSelect} from './Select'
 
 const formatlistOptions = (varants: VariantType[]) =>
   varants.map((variant) => ({
@@ -62,7 +62,7 @@ export const VariantInput = (props: StringInputProps) => {
     })?.variants || []
 
   return (
-    <Select
+    <ExperimentSelect
       {...props}
       listOptions={formatlistOptions(filteredVariants)}
       handleChange={handleChange}

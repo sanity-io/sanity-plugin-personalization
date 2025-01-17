@@ -9,9 +9,9 @@ import {
   useFormValue,
 } from 'sanity'
 
-import {ExperimentType} from '..'
+import {ExperimentType} from '../../types'
 import {useExperimentContext} from './ExperimentContext'
-import {Select} from './Select'
+import {ExperimentSelect} from './Select'
 
 export type SelectOption = {title: string; value: string}
 const formatlistOptions = (experiments: ExperimentType[]): SelectOption[] =>
@@ -56,6 +56,10 @@ export const ExperimentInput = (props: StringInputProps) => {
   if (!experiments.length) return <></>
 
   return (
-    <Select {...props} listOptions={formatlistOptions(experiments)} handleChange={handleChange} />
+    <ExperimentSelect
+      {...props}
+      listOptions={formatlistOptions(experiments)}
+      handleChange={handleChange}
+    />
   )
 }

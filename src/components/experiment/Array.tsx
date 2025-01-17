@@ -3,10 +3,10 @@ import {uuid} from '@sanity/uuid'
 import {useCallback} from 'react'
 import {useFormValue} from 'sanity'
 
-import {ArrayInputProps, VariantType} from '../types'
+import {ArrayInputProps, VariantType} from '../../types'
 import {useExperimentContext} from './ExperimentContext'
 
-export const ArrayInput = (props: ArrayInputProps) => {
+export const ExperimentArrayInput = (props: ArrayInputProps) => {
   const fieldPath = props.path.slice(0, -1)
   const experimentId = useFormValue([...fieldPath, 'experimentId'])
 

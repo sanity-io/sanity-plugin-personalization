@@ -8,30 +8,28 @@ import {
   SanityClient,
 } from 'sanity'
 
-import {ExperimentArrayInput} from './components/experiment/Array'
-import {CONFIG_DEFAULT, ExperimentProvider} from './components/experiment/ExperimentContext'
-import {ExperimentField} from './components/experiment/ExperimentField'
-import {ExperimentInput} from './components/experiment/ExperimentInput'
-import {ExperimentVariantPreview} from './components/experiment/VariantPreview'
-import {ExperimentType, FieldPluginConfig} from './types'
+import {PersonalisationArrayInput} from './components/personalisation/Array'
+import {
+  CONFIG_DEFAULT,
+  PersonalistaionProvider,
+} from './components/personalisation/PersonalisationContext'
+import {PersonalisationVariantPreview} from './components/personalisation/VariantPreview'
+import {PersonalisationPluginConfig, VariantType} from './types'
 import {flattenSchemaType} from './utils/flattenSchemaType'
 
 const createFieldType = ({
   field,
 }: {
   field: string | FieldDefinition
-  experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
+  variants: VariantType[] | ((client: SanityClient) => Promise<VariantType[]>)
 }) => {
   const typeName = typeof field === `string` ? field : field.name
   const usedName = String(typeName[0]).toUpperCase() + String(typeName).slice(1)
-  const objectName = `variantExperiment${usedName}`
+  const objectName = `variantPersonalisation${usedName}`
 
   return defineType({
-    name: `experiment${usedName}`,
+    name: `personalisation${usedName}`,
     type: 'object',
-    components: {
-      field: ExperimentField,
-    },
     fields: [
       typeof field === `string`
         ? // Define a simple field if all we have is the name as a string
@@ -45,30 +43,11 @@ const createFieldType = ({
             name: 'default',
           },
       defineField({
-        name: 'active',
-        type: 'boolean',
-        hidden: true,
-      }),
-      defineField({
-        title: 'Experiment',
-        name: 'experimentId',
-        type: 'string',
-        components: {
-          input: ExperimentInput,
-        },
-        hidden: ({parent}) => {
-          return !parent?.active
-        },
-      }),
-      defineField({
         name: 'variants',
         type: 'array',
-        hidden: ({parent}) => {
-          return !parent?.experimentId
-        },
         components: {
           input: (props: ArrayOfObjectsInputProps) => (
-            <ExperimentArrayInput {...props} objectName={objectName} />
+            <PersonalisationArrayInput {...props} objectName={objectName} />
           ),
         },
         of: [
@@ -86,27 +65,22 @@ const createFieldObjectType = ({
   field,
 }: {
   field: string | FieldDefinition
-  experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
+  variants: VariantType[] | ((client: SanityClient) => Promise<VariantType[]>)
 }) => {
   const typeName = typeof field === `string` ? field : field.name
   const usedName = String(typeName[0]).toUpperCase() + String(typeName).slice(1)
   return defineType({
-    name: `variantExperiment${usedName}`,
-    title: `Experiment array ${usedName}`,
+    name: `variantPersonalisation${usedName}`,
+    title: `Personalisation array ${usedName}`,
     type: 'object',
     components: {
-      preview: ExperimentVariantPreview,
+      preview: PersonalisationVariantPreview,
     },
     fields: [
       {
         type: 'string',
         name: 'variantId',
         readOnly: true,
-      },
-      {
-        type: 'string',
-        name: 'experimentId',
-        hidden: true,
       },
       typeof field === `string`
         ? // Define a simple field if all we have is the name as a string
@@ -125,26 +99,25 @@ const createFieldObjectType = ({
     preview: {
       select: {
         variant: 'variantId',
-        experiment: 'experimentId',
         value: 'value',
       },
     },
   })
 }
 
-const fieldSchema = ({fields, experiments}: FieldPluginConfig) => {
+const fieldSchema = ({fields, variants}: PersonalisationPluginConfig) => {
   return [
-    ...fields.map((field) => createFieldObjectType({field, experiments})),
-    ...fields.map((field) => createFieldType({field, experiments})),
+    ...fields.map((field) => createFieldObjectType({field, variants})),
+    ...fields.map((field) => createFieldType({field, variants})),
   ]
 }
 
-export const fieldLevelExperiments = definePlugin<FieldPluginConfig>((config) => {
+export const fieldLevelPersonalisation = definePlugin<PersonalisationPluginConfig>((config) => {
   const pluginConfig = {...CONFIG_DEFAULT, ...config}
-  const {fields, experiments} = pluginConfig
-  const fieldSchemaConfig = fieldSchema({fields, experiments})
+  const {fields, variants} = pluginConfig
+  const fieldSchemaConfig = fieldSchema({fields, variants})
   return {
-    name: 'sanity-personalistaion-plugin-field-level-experiments',
+    name: 'sanity-personalistaion-plugin-field-level-personalisation',
     schema: {
       types: fieldSchemaConfig,
     },
@@ -160,13 +133,15 @@ export const fieldLevelExperiments = definePlugin<FieldPluginConfig>((config) =>
           const flatFieldTypeNames = flattenSchemaType(props.schemaType).map(
             (field) => field.type.name,
           )
-          const hasExperiment = flatFieldTypeNames.some((name) => name.startsWith('experiment'))
+          const hasPersonalisation = flatFieldTypeNames.some((name) =>
+            name.startsWith('personalisation'),
+          )
 
-          if (!hasExperiment) {
+          if (!hasPersonalisation) {
             return props.renderDefault(props)
           }
-          const providerProps = {...props, experimentFieldPluginConfig: pluginConfig}
-          return ExperimentProvider(providerProps)
+          const providerProps = {...props, personalisationFieldPluginConfig: pluginConfig}
+          return PersonalistaionProvider(providerProps)
         },
       },
     },
