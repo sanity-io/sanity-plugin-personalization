@@ -22,6 +22,8 @@ export type FieldPluginConfig = {
   fields: (string | FieldDefinition)[]
   experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
   apiVersion?: string
+  fieldNameOverride?: string
+  objectNameOverride?: string
 }
 
 export type VariantPreviewProps = Omit<PreviewProps, 'SchemaType'> & {
@@ -37,6 +39,8 @@ export type ExperimentContextProps = Required<FieldPluginConfig> & {
 
 export type ArrayInputProps = ArrayOfObjectsInputProps & {
   objectName: string
+  fieldNameOverride: string
+  objectNameOverride: string
 }
 
 export type ObjectFieldWithPath = ObjectField<SchemaType> & {path: Path}

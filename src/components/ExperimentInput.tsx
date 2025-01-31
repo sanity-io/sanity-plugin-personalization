@@ -20,11 +20,14 @@ const formatlistOptions = (experiments: ExperimentType[]): SelectOption[] =>
     value: experiment.id,
   }))
 
-export const ExperimentInput = (props: StringInputProps) => {
+export const ExperimentInput = (props: StringInputProps & {objectNameOverride: string}) => {
   const {experiments} = useExperimentContext()
 
   const id = useFormValue(['_id']) as string
-  const aditionalChangePath = useMemo(() => [...props.path.slice(0, -1), 'variants'], [props.path])
+  const aditionalChangePath = useMemo(
+    () => [...props.path.slice(0, -1), props.objectNameOverride],
+    [props.objectNameOverride, props.path],
+  )
   const subValues = useFormValue(aditionalChangePath)
 
   const {patch} = useDocumentOperation(id.replace('drafts.', ''), props.schemaType.name)

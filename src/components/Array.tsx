@@ -8,25 +8,24 @@ import {useExperimentContext} from './ExperimentContext'
 
 export const ArrayInput = (props: ArrayInputProps) => {
   const fieldPath = props.path.slice(0, -1)
-  const experimentId = useFormValue([...fieldPath, 'experimentId'])
+  const {onItemAppend, objectName, fieldNameOverride, objectNameOverride} = props
+  const experimentId = useFormValue([...fieldPath, `${fieldNameOverride}Id`])
 
   const {experiments} = useExperimentContext()
-
-  const {onItemAppend, objectName} = props
 
   const handleClick = useCallback(
     async (variant: VariantType) => {
       const item = {
         _key: uuid(),
-        variantId: variant.id,
-        experimentId: experimentId,
+        [`${objectNameOverride}Id`]: variant.id,
+        [`${fieldNameOverride}Id`]: experimentId,
         _type: objectName,
       }
 
       // Patch the document
       onItemAppend(item)
     },
-    [experimentId, objectName, onItemAppend],
+    [experimentId, objectName, onItemAppend, fieldNameOverride, objectNameOverride],
   )
 
   const filteredVariants =
@@ -35,17 +34,17 @@ export const ArrayInput = (props: ArrayInputProps) => {
     })?.variants || []
 
   type Value = {
-    experimentId: string
     value?: unknown
+    [key: string]: string
     variantId: string
     _key: string
     _type: string
   }
 
   // there is probably some better was of getting the type of this?
-  const values = props.value as Value[] | []
+  const values = props.value || []
 
-  const usedVariants = values?.map((variant) => variant.variantId)
+  const usedVariants = values?.map((variant) => variant[`${objectNameOverride}Id`] as string)
 
   return (
     <Stack space={3}>

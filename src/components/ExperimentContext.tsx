@@ -11,6 +11,8 @@ import {ExperimentContextProps, FieldPluginConfig} from '../types'
 export const CONFIG_DEFAULT = {
   fields: [],
   apiVersion: '2024-11-07',
+  fieldNameOverride: 'experiment',
+  objectNameOverride: 'variant',
 }
 
 export const ExperimentContext = createContext<ExperimentContextProps>({
