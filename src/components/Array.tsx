@@ -55,7 +55,7 @@ export const ArrayInput = (props: ArrayInputProps) => {
         {filteredVariants.map((variant) => {
           return (
             <Button
-              key={variant.id}
+              key={`${experimentId}-${variant.id}`}
               text={`Add ${variant.label}`}
               mode="ghost"
               disabled={usedVariants?.includes(variant.id)}

@@ -27,10 +27,11 @@ export type FieldPluginConfig = {
   apiVersion?: string
 }
 
-export type VariantPreviewProps = PreviewProps & {
+export type VariantPreviewProps = Omit<PreviewProps, 'SchemaType'> & {
   experiment: string
   variant: string
-  value: unknown
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any
 }
 
 export type ExperimentContextProps = Required<FieldPluginConfig> & {
