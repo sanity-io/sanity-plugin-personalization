@@ -3,6 +3,7 @@ import {SanityClient} from 'sanity'
 import {ExperimentType, GrowthbookFeature} from '../types'
 
 const getBooleanConversion = (value: string) => {
+  // this way or the other way around?
   if (value === 'true') {
     return 'variant'
   } else if (value === 'false') {
@@ -28,12 +29,14 @@ export const getExperiments = async (
     url.searchParams.append('projectId', project)
   }
 
+  // could be a config option
   url.searchParams.append('limit', '100')
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${secret}`,
     },
   })
+  // if more than 100 need to paginate
   const {features} = await response.json()
 
   if (!features) return []

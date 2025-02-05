@@ -14,18 +14,19 @@ const pluginConfigKeys = [
 ]
 
 export const Secrets = (props: ObjectInputProps) => {
-  const {secrets} = useSecrets(namespace) as {secrets: {apiKey: string}}
+  const {secrets, loading} = useSecrets(namespace) as {secrets: {apiKey: string}; loading: boolean}
   const {setSecret} = useExperimentContext()
   const [showSettings, setShowSettings] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!secrets) {
+    if (loading) return undefined
+    if (!secrets && !loading) {
       setSecret(undefined)
       return setShowSettings(true)
     }
     setSecret(secrets.apiKey)
     return setShowSettings(false)
-  }, [secrets, setSecret])
+  }, [secrets, loading, setSecret])
 
   if (!showSettings) {
     return props.renderDefault(props)
