@@ -1,5 +1,7 @@
 # @sanity/personalization-plugin
 
+## Previously know as @sanity/personalisation-plugin
+
 > This is a **Sanity Studio v3** plugin.
 
 This plugin allows users to add a/b/n testing experiments to individual fields.
