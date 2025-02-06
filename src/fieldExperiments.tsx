@@ -20,7 +20,9 @@ const createFieldType = ({
   field,
 }: {
   field: string | FieldDefinition
-  experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
+  experiments:
+    | ExperimentType[]
+    | ((client: SanityClient, secret?: string) => Promise<ExperimentType[]>)
 }) => {
   const typeName = typeof field === `string` ? field : field.name
   const usedName = String(typeName[0]).toUpperCase() + String(typeName).slice(1)
