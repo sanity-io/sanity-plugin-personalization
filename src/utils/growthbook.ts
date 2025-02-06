@@ -21,10 +21,11 @@ export const getExperiments = async (
   const query = `*[_id == 'secrets.growthbook'][0].secrets.apiKey`
 
   const secret = await client.fetch(query) // secret is stored in the content lake using @sanity/studio-secrets
-
   if (!secret) return []
 
+  // TODO: needs to be a config option for self hosted users
   const url = new URL('https://api.growthbook.io/api/v1/features')
+  // TODO: add this as part of the config
   if (project) {
     url.searchParams.append('projectId', project)
   }
@@ -36,21 +37,26 @@ export const getExperiments = async (
       Authorization: `Bearer ${secret}`,
     },
   })
-  // if more than 100 need to paginate
+  // TODO: add pagination if more than 100 features
   const {features} = await response.json()
 
   if (!features) return []
 
+  // do you have a types package?
   const featureExperiments: (ExperimentType | undefined)[] = features
     ?.filter((feature: GrowthbookFeature) => !feature.archived)
     .map((feature: GrowthbookFeature) => {
+      // what is the difference between experiment and experiment-ref?
+      // anything else i need to consider?
+
       const experiments = feature.environments[environment]?.rules.filter(
         (experiment) => experiment.type === 'experiment-ref' || experiment.type === 'experiment',
-      )[0]
+      )[0] // TODO: handle multiple experiments and get all potential variations
 
       if (!experiments) {
         return undefined
       }
+      // how often would a 2 variants have the same value?
       const variations = experiments?.variations.map((variant) => ({
         id: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
         label: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
