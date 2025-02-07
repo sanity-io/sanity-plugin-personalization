@@ -5,6 +5,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v1.1.1...v2.0.0) (2025-02-07)
+
+### ⚠ BREAKING CHANGES
+
+- use US english for repo name
+
+### Features
+
+- updated list preview to reflect experiment variants ([c479c65](https://github.com/sanity-io/sanity-plugin-personalization/commit/c479c654f91ef4897295ff2a1e43e52597b8f3f5))
+
+### Documentation
+
+- updated repo link ([79d0b02](https://github.com/sanity-io/sanity-plugin-personalization/commit/79d0b0245e3e17553b24ab6d555d9e6e51b1aba7))
+
 ## [1.1.1](https://github.com/sanity-io/sanity-plugin-personalisation/compare/v1.1.0...v1.1.1) (2025-01-02)
 
 ### Bug Fixes
