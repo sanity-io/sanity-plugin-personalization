@@ -1,4 +1,6 @@
-# @sanity/personalisation-plugin
+# @sanity/personalization-plugin
+
+## Previously know as @sanity/personalisation-plugin
 
 > This is a **Sanity Studio v3** plugin.
 
@@ -10,7 +12,7 @@ For this plugin you need to defined the experiments you are running and the vari
 
 Once configured you can query the values using the ids of the experiment and variant
 
-- [@sanity/personalisation-plugin](#@sanity/personalisation-plugin)
+- [@sanity/personalization-plugin](#@sanity/personalization-plugin)
   - [Installation](#installation)
   - [Usage](#usage)
   - [Loading Experiments](#loading-experiments)
@@ -26,7 +28,7 @@ Once configured you can query the values using the ids of the experiment and var
 ## Installation
 
 ```sh
-npm install @sanity/personalisation-plugin
+npm install @sanity/personalization-plugin
 ```
 
 ## Usage
@@ -35,7 +37,7 @@ Add it as a plugin in `sanity.config.ts` (or .js):
 
 ```ts
 import {defineConfig} from 'sanity'
-import {fieldLevelExperiments} from '@sanity/personalisation-plugin'
+import {fieldLevelExperiments} from '@sanity/personalization-plugin'
 
 const experiment1 = {
   id: '123',
@@ -177,7 +179,7 @@ For more control over the value field, you can pass a schema definition into the
 
 ```ts
 import {defineConfig} from 'sanity'
-import {fieldLevelExperiments} from '@sanity/personalisation-plugin'
+import {fieldLevelExperiments} from '@sanity/personalization-plugin'
 
 export default defineConfig({
   //...
@@ -279,7 +281,7 @@ on how to run this plugin with hotreload in the studio.
 
 ### Release new version
 
-Run ["CI & Release" workflow](https://github.com/sanity-io/sanity-plugin-personalisation/actions/workflows/main.yml).
+Run ["CI & Release" workflow](https://github.com/sanity-io/sanity-plugin-personalization/actions/workflows/main.yml).
 Make sure to select the main branch and check "Release new version".
 
 Semantic release will only release on configured branches, so it is safe to run release on any branch.
