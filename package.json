@@ -6,13 +6,13 @@
     "sanity",
     "sanity-plugin"
   ],
-  "homepage": "https://github.com/sanity-io/sanity-plugin-personalisation#readme",
+  "homepage": "https://github.com/sanity-io/sanity-plugin-personalization#readme",
   "bugs": {
-    "url": "https://github.com/sanity-io/sanity-plugin-personalisation/issues"
+    "url": "https://github.com/sanity-io/sanity-plugin-personalization/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:sanity-io/sanity-plugin-personalisation.git"
+    "url": "git@github.com:sanity-io/sanity-plugin-personalization.git"
   },
   "license": "MIT",
   "author": "Sanity <hello@sanity.io>",
