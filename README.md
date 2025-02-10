@@ -83,8 +83,8 @@ export default defineConfig({
 
 This will register two new fields to the schema., based on the setting passed intto `fields:`
 
-- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentId` and an array field of type:
-- `varirantsString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `experimentId`.
+- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentId` and an array field called `variants` of type:
+- `variantString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `experimentId`.
 
 Use the experiment field in your schema like this:
 
@@ -200,7 +200,7 @@ export default defineConfig({
 
 This would also create two new fields in your schema.
 
-- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field of type:
+- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field called `variants` of type:
 - `variantFeaturedProduct` an object field with a `reference` field called `value`, a string field called `variandId`, a `string` field called `experimentId`.
 
 Note that the name key in the field gets rewritten to value and is instead used to name the object field.
@@ -289,7 +289,7 @@ export default defineConfig({
 
 This would also create two new fields in your schema.
 
-- `audienceString` an Object field with `string` field called `default`, a `string` field called `audienceId` and an array field of type:
+- `audienceString` an Object field with `string` field called `default`, a `string` field called `audienceId` and an array field called `segments` of type:
 - `segmentString` an object field with a `string` field called `value`, a string field called `segmentId`, a `string` field called `audienceId`.
 
 the data will be stored as
