@@ -1,5 +1,4 @@
 import {CloseIcon} from '@sanity/icons'
-import {useCallback, useMemo} from 'react'
 import {GiSoapExperiment} from 'react-icons/gi'
 import {
   defineDocumentFieldAction,
@@ -15,9 +14,9 @@ type PatchStuff = {onChange: (patch: FormPatch | FormPatch[] | PatchEvent) => vo
 
 const useAddExperimentAction = (
   props: DocumentFieldActionProps &
-    PatchStuff & {objectNameOverride: string; fieldNameOverride: string; active: boolean},
+    PatchStuff & {experimentNameOverride: string; experimentId: string; active: boolean},
 ): DocumentFieldActionItem => {
-  const {onChange, active} = props
+  const {onChange, active, experimentNameOverride} = props
 
   const handleAddAction = () => {
     // console.log('showing experiment', patchActiveTrueEvent)
@@ -25,7 +24,7 @@ const useAddExperimentAction = (
   }
 
   return {
-    title: 'Add experiment',
+    title: `Add ${experimentNameOverride}`,
     type: 'action',
     icon: GiSoapExperiment,
     onAction: handleAddAction,
@@ -35,27 +34,25 @@ const useAddExperimentAction = (
 
 const useRemoveExperimentAction = (
   props: DocumentFieldActionProps &
-    PatchStuff & {objectNameOverride: string; fieldNameOverride: string; active: boolean},
+    PatchStuff & {experimentNameOverride: string; experimentId: string; active: boolean},
 ): DocumentFieldActionItem => {
-  const {onChange, active, fieldNameOverride, objectNameOverride} = props
+  const {onChange, active, experimentId, experimentNameOverride} = props
   const patchActiveFalseEvent = () => {
     const activeId = ['active']
     return set(!active, activeId)
   }
-  console.log(fieldNameOverride, objectNameOverride)
   const patchClearEvent = () => {
-    const experimentId = [`${fieldNameOverride}Id`] // `${props.inputId}.experimentId`
-    const variants = [objectNameOverride] //`${props.inputId}.variants`
-    return [unset(experimentId), unset(variants)]
+    const experiment = [experimentId]
+    const variants = [experimentNameOverride]
+    return [unset(experiment), unset(variants)]
   }
   const handleClearAction = () => {
-    // console.log('hiding experiment', patchActiveFalseEvent)
     const clearEvents = patchClearEvent()
     const activeEvent = patchActiveFalseEvent()
     onChange([activeEvent, ...clearEvents])
   }
   return {
-    title: 'Remove experiment',
+    title: `Remove ${experimentNameOverride}`,
     type: 'action',
     icon: CloseIcon,
     onAction: handleClearAction,
@@ -67,31 +64,31 @@ const newActions = ({
   onChange,
   inputId,
   active,
-  objectNameOverride,
-  fieldNameOverride,
-}: PatchStuff & {active?: boolean; objectNameOverride: string; fieldNameOverride: string}) => {
+  experimentNameOverride,
+  experimentId,
+}: PatchStuff & {active?: boolean; experimentNameOverride: string; experimentId: string}) => {
   const removeAction = defineDocumentFieldAction({
-    name: 'Remove Experiment',
+    name: `Remove ${experimentNameOverride}`,
     useAction: (props) =>
       useRemoveExperimentAction({
         ...props,
         active: true,
         onChange,
         inputId,
-        objectNameOverride,
-        fieldNameOverride,
+        experimentNameOverride,
+        experimentId,
       }),
   })
   const addAction = defineDocumentFieldAction({
-    name: 'Add Experiment',
+    name: `Add ${experimentNameOverride}`,
     useAction: (props) =>
       useAddExperimentAction({
         ...props,
         active: false,
         onChange,
         inputId,
-        objectNameOverride,
-        fieldNameOverride,
+        experimentNameOverride,
+        experimentId,
       }),
   })
   if (active) {
@@ -101,10 +98,10 @@ const newActions = ({
 }
 
 export const ExperimentField = (
-  props: ObjectFieldProps & {objectNameOverride: string; fieldNameOverride: string},
+  props: ObjectFieldProps & {experimentNameOverride: string; experimentId: string},
 ) => {
   const {onChange} = props.inputProps
-  const {inputId, objectNameOverride, fieldNameOverride} = props
+  const {inputId, experimentNameOverride, experimentId} = props
   const active = props.value?.active as boolean | undefined
 
   const oldActions = props.actions || []
@@ -112,7 +109,7 @@ export const ExperimentField = (
   const withActionProps = {
     ...props,
     actions: [
-      newActions({onChange, inputId, active, objectNameOverride, fieldNameOverride}),
+      newActions({onChange, inputId, active, experimentNameOverride, experimentId}),
       ...oldActions,
     ],
   }

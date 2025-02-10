@@ -15,28 +15,34 @@ import {VariantPreview} from './components/VariantPreview'
 import {FieldPluginConfig} from './types'
 import {flattenSchemaType} from './utils/flattenSchemaType'
 
-const createFieldType = ({
+const createExperimentType = ({
   field,
-  fieldNameOverride,
-  objectNameOverride,
+  experimentNameOverride,
+  variantNameOverride,
+  variantId,
+  variantArrayName,
+  experimentId,
 }: {
   field: string | FieldDefinition
-  fieldNameOverride: string
-  objectNameOverride: string
+  experimentNameOverride: string
+  variantNameOverride: string
+  variantId: string
+  variantArrayName: string
+  experimentId: string
 }) => {
   const typeName = typeof field === `string` ? field : field.name
   const usedName = String(typeName[0]).toUpperCase() + String(typeName).slice(1)
-  const objectName = `${objectNameOverride}${usedName}`
+  const variantName = `${variantNameOverride}${usedName}`
 
   return defineType({
-    name: `${fieldNameOverride}${usedName}`,
+    name: `${experimentNameOverride}${usedName}`,
     type: 'object',
     components: {
       field: (props) => (
         <ExperimentField
           {...props}
-          fieldNameOverride={fieldNameOverride}
-          objectNameOverride={objectNameOverride}
+          experimentId={experimentId}
+          experimentNameOverride={experimentNameOverride}
         />
       ),
     },
@@ -58,36 +64,37 @@ const createFieldType = ({
         hidden: true,
       }),
       defineField({
-        title: fieldNameOverride,
-        name: `${fieldNameOverride}Id`,
+        name: experimentId,
         type: 'string',
         components: {
-          input: (props) => <ExperimentInput {...props} objectNameOverride={objectNameOverride} />,
+          input: (props) => (
+            <ExperimentInput {...props} variantNameOverride={variantNameOverride} />
+          ),
         },
         hidden: ({parent}) => {
           return !parent?.active
         },
       }),
       defineField({
-        name: `${objectNameOverride}s`,
+        name: variantArrayName,
         type: 'array',
         hidden: ({parent}) => {
-          return !parent?.[`${fieldNameOverride}Id`]
+          return !parent?.[experimentId]
         },
         components: {
           input: (props: ArrayOfObjectsInputProps) => (
             <ArrayInput
               {...props}
-              fieldNameOverride={fieldNameOverride}
-              objectNameOverride={objectNameOverride}
-              objectName={objectName}
+              variantName={variantName}
+              variantId={variantId}
+              experimentId={experimentId}
             />
           ),
         },
         of: [
           defineField({
-            name: objectName,
-            type: objectName,
+            name: variantName,
+            type: variantName,
           }),
         ],
       }),
@@ -95,20 +102,22 @@ const createFieldType = ({
   })
 }
 
-const createFieldObjectType = ({
+const createVariantType = ({
   field,
-  fieldNameOverride,
-  objectNameOverride,
+  variantNameOverride,
+  variantId,
+  experimentId,
 }: {
   field: string | FieldDefinition
-  fieldNameOverride: string
-  objectNameOverride: string
+  variantNameOverride: string
+  variantId: string
+  experimentId: string
 }) => {
   const typeName = typeof field === `string` ? field : field.name
   const usedName = String(typeName[0]).toUpperCase() + String(typeName).slice(1)
   return defineType({
-    name: `${objectNameOverride}${usedName}`,
-    title: `${objectNameOverride} array ${usedName}`,
+    name: `${variantNameOverride}${usedName}`,
+    title: `${variantNameOverride} array ${usedName}`,
     type: 'object',
     components: {
       preview: VariantPreview,
@@ -116,12 +125,12 @@ const createFieldObjectType = ({
     fields: [
       {
         type: 'string',
-        name: `${objectNameOverride}Id`,
+        name: variantId,
         readOnly: true,
       },
       {
         type: 'string',
-        name: `${fieldNameOverride}Id`,
+        name: experimentId,
         hidden: true,
       },
       typeof field === `string`
@@ -140,8 +149,8 @@ const createFieldObjectType = ({
     ],
     preview: {
       select: {
-        variant: `${objectNameOverride}Id`,
-        experiment: `${fieldNameOverride}Id`,
+        variant: variantId,
+        experiment: experimentId,
         value: 'value',
       },
     },
@@ -150,19 +159,45 @@ const createFieldObjectType = ({
 
 const fieldSchema = ({
   fields,
-  fieldNameOverride,
-  objectNameOverride,
+  experimentNameOverride,
+  variantNameOverride,
+  variantId,
+  variantArrayName,
+  experimentId,
 }: Required<Omit<FieldPluginConfig, 'apiVersion' | 'experiments'>>) => {
   return [
-    ...fields.map((field) => createFieldObjectType({field, fieldNameOverride, objectNameOverride})),
-    ...fields.map((field) => createFieldType({field, fieldNameOverride, objectNameOverride})),
+    ...fields.map((field) =>
+      createVariantType({field, variantNameOverride, variantId, experimentId}),
+    ),
+    ...fields.map((field) =>
+      createExperimentType({
+        field,
+        experimentNameOverride,
+        variantNameOverride,
+        variantId,
+        variantArrayName,
+        experimentId,
+      }),
+    ),
   ]
 }
 
 export const fieldLevelExperiments = definePlugin<FieldPluginConfig>((config) => {
   const pluginConfig = {...CONFIG_DEFAULT, ...config}
-  const {fields, fieldNameOverride, objectNameOverride} = pluginConfig
-  const fieldSchemaConfig = fieldSchema({fields, fieldNameOverride, objectNameOverride})
+  const {fields, experimentNameOverride, variantNameOverride} = pluginConfig
+
+  const experimentId = `${experimentNameOverride}Id`
+  const variantArrayName = `${variantNameOverride}s`
+  const variantId = `${variantNameOverride}Id`
+
+  const fieldSchemaConfig = fieldSchema({
+    fields,
+    experimentNameOverride,
+    variantNameOverride,
+    variantId,
+    variantArrayName,
+    experimentId,
+  })
   return {
     name: 'sanity-personalistaion-plugin-field-level-experiments',
     schema: {
@@ -181,13 +216,21 @@ export const fieldLevelExperiments = definePlugin<FieldPluginConfig>((config) =>
             (field) => field.type.name,
           )
           const hasExperiment = flatFieldTypeNames.some((name) =>
-            name.startsWith(fieldNameOverride),
+            name.startsWith(experimentNameOverride),
           )
 
           if (!hasExperiment) {
             return props.renderDefault(props)
           }
-          const providerProps = {...props, experimentFieldPluginConfig: pluginConfig}
+          const providerProps = {
+            ...props,
+            experimentFieldPluginConfig: {
+              ...pluginConfig,
+              variantId,
+              variantArrayName,
+              experimentId,
+            },
+          }
           return ExperimentProvider(providerProps)
         },
       },

@@ -20,13 +20,13 @@ const formatlistOptions = (experiments: ExperimentType[]): SelectOption[] =>
     value: experiment.id,
   }))
 
-export const ExperimentInput = (props: StringInputProps & {objectNameOverride: string}) => {
+export const ExperimentInput = (props: StringInputProps & {variantNameOverride: string}) => {
   const {experiments} = useExperimentContext()
 
   const id = useFormValue(['_id']) as string
   const aditionalChangePath = useMemo(
-    () => [...props.path.slice(0, -1), props.objectNameOverride],
-    [props.objectNameOverride, props.path],
+    () => [...props.path.slice(0, -1), props.variantNameOverride],
+    [props.variantNameOverride, props.path],
   )
   const subValues = useFormValue(aditionalChangePath)
 

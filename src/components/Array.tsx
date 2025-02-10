@@ -8,8 +8,8 @@ import {useExperimentContext} from './ExperimentContext'
 
 export const ArrayInput = (props: ArrayInputProps) => {
   const fieldPath = props.path.slice(0, -1)
-  const {onItemAppend, objectName, fieldNameOverride, objectNameOverride} = props
-  const experimentId = useFormValue([...fieldPath, `${fieldNameOverride}Id`])
+  const {onItemAppend, variantName, variantId, experimentId} = props
+  const experimentValue = useFormValue([...fieldPath, experimentId])
 
   const {experiments} = useExperimentContext()
 
@@ -17,34 +17,34 @@ export const ArrayInput = (props: ArrayInputProps) => {
     async (variant: VariantType) => {
       const item = {
         _key: uuid(),
-        [`${objectNameOverride}Id`]: variant.id,
-        [`${fieldNameOverride}Id`]: experimentId,
-        _type: objectName,
+        [variantId]: variant.id,
+        [experimentId]: experimentValue,
+        _type: variantName,
       }
 
       // Patch the document
       onItemAppend(item)
     },
-    [experimentId, objectName, onItemAppend, fieldNameOverride, objectNameOverride],
+    [variantId, experimentId, experimentValue, variantName, onItemAppend],
   )
 
   const filteredVariants =
     experiments.find((option) => {
-      return option.id === experimentId
+      return option.id === experimentValue
     })?.variants || []
 
   type Value = {
     value?: unknown
-    [key: string]: string
+    [key: string]: string | unknown
     variantId: string
     _key: string
     _type: string
   }
 
   // there is probably some better was of getting the type of this?
-  const values = props.value || []
+  const values = (props.value as Value[]) || []
 
-  const usedVariants = values?.map((variant) => variant[`${objectNameOverride}Id`] as string)
+  const usedVariants = values?.map((variant) => variant[variantId])
 
   return (
     <Stack space={3}>
@@ -54,7 +54,7 @@ export const ArrayInput = (props: ArrayInputProps) => {
         {filteredVariants.map((variant) => {
           return (
             <Button
-              key={`${experimentId}-${variant.id}`}
+              key={`${experimentValue}-${variant.id}`}
               text={`Add ${variant.label}`}
               mode="ghost"
               disabled={usedVariants?.includes(variant.id)}
