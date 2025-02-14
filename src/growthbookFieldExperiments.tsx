@@ -5,21 +5,23 @@ import {fieldLevelExperiments} from './fieldExperiments'
 import {flattenSchemaType} from './utils/flattenSchemaType'
 import {getExperiments} from './utils/growthbook'
 
-type GrowthbookABConfig = {
+export type GrowthbookABConfig = {
   fields: (string | FieldDefinition)[]
   environment: string
+  baseUrl?: string
   project?: string
   convertBooleans?: boolean
 }
 
 export const growthbookFieldLevel = definePlugin<GrowthbookABConfig>((config) => {
-  const {fields, environment, project, convertBooleans} = config
+  const {fields, environment, project, convertBooleans, baseUrl} = config
   return {
     name: 'sanity-growthbook-personalistaion-plugin-field-level-experiments',
     plugins: [
       fieldLevelExperiments({
         fields,
-        experiments: (client) => getExperiments(client, environment, project, convertBooleans),
+        experiments: (client) =>
+          getExperiments({client, environment, baseUrl, project, convertBooleans}),
       }),
     ],
 

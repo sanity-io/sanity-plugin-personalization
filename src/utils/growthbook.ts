@@ -1,6 +1,7 @@
 import {SanityClient} from 'sanity'
 
-import {ExperimentType, GrowthbookFeature} from '../types'
+import {GrowthbookABConfig} from '../growthbookFieldExperiments'
+import {ExperimentType, GrowthbookFeature, VariantType} from '../types'
 
 const getBooleanConversion = (value: string) => {
   // this way or the other way around?
@@ -12,58 +13,66 @@ const getBooleanConversion = (value: string) => {
   return value
 }
 
-export const getExperiments = async (
-  client: SanityClient,
-  environment: string,
-  project?: string,
-  convertBooleans?: boolean,
-) => {
+export const getExperiments = async ({
+  client,
+  environment,
+  baseUrl,
+  project,
+  convertBooleans,
+}: Omit<GrowthbookABConfig, 'fields'> & {client: SanityClient}): Promise<ExperimentType[]> => {
   const query = `*[_id == 'secrets.growthbook'][0].secrets.apiKey`
 
   const secret = await client.fetch(query) // secret is stored in the content lake using @sanity/studio-secrets
   if (!secret) return []
 
-  // TODO: needs to be a config option for self hosted users
-  const url = new URL('https://api.growthbook.io/api/v1/features')
-  // TODO: add this as part of the config
+  const featureExperiments: ExperimentType[] = []
+  let hasMore = true
+  let offset = 0
+  const url = new URL(baseUrl ?? 'https://api.growthbook.io/api/v1/features')
   if (project) {
-    url.searchParams.append('projectId', project)
+    url.searchParams.set('projectId', project)
   }
 
-  // could be a config option
-  url.searchParams.append('limit', '100')
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${secret}`,
-    },
-  })
-  // TODO: add pagination if more than 100 features
-  const {features} = await response.json()
+  while (hasMore) {
+    url.searchParams.set('offset', offset.toString())
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${secret}`,
+      },
+    })
 
-  if (!features) return []
+    const {features, hasMore: responseHasMore, nextOffset} = await response.json()
 
-  // do you have a types package?
-  const featureExperiments: (ExperimentType | undefined)[] = features
-    ?.filter((feature: GrowthbookFeature) => !feature.archived)
-    .map((feature: GrowthbookFeature) => {
-      // what is the difference between experiment and experiment-ref?
-      // anything else i need to consider?
+    hasMore = responseHasMore
+    offset = nextOffset
+    if (!features) continue
 
+    features.forEach((feature: GrowthbookFeature) => {
+      if (feature.archived) {
+        return undefined
+      }
       const experiments = feature.environments[environment]?.rules.filter(
         (experiment) => experiment.type === 'experiment-ref' || experiment.type === 'experiment',
-      )[0] // TODO: handle multiple experiments and get all potential variations
+      )
 
       if (!experiments) {
         return undefined
       }
-      // how often would a 2 variants have the same value?
-      const variations = experiments?.variations.map((variant) => ({
-        id: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
-        label: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
-      }))
 
-      return {id: feature.id, label: feature.id, variants: variations}
+      const variations = new Set<VariantType>()
+      experiments.forEach((experiment) => {
+        experiment?.variations.forEach((variant) => {
+          variations.add({
+            id: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
+            label: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
+          })
+        })
+      })
+      const value = {id: feature.id, label: feature.id, variants: [...variations]}
+
+      featureExperiments.push(value)
+      return undefined
     })
-
-  return featureExperiments.filter(Boolean) as ExperimentType[]
+  }
+  return featureExperiments
 }
