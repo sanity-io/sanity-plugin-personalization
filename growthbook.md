@@ -36,7 +36,6 @@ Add it as a plugin in `sanity.config.ts` (or .js):
 import {defineConfig} from 'sanity'
 import {growthbookFieldLevel} from '@sanity/personalization-plugin'
 
-
 export default defineConfig({
   //...
   plugins: [
@@ -44,7 +43,7 @@ export default defineConfig({
     growthbookFieldLevel({
       fields: ['string'],
       environment: 'production', // the growthbook environment
-      projectId: 'string' // optional filter parameter for fetching features/experiments
+      projectId: 'string', // optional filter parameter for fetching features/experiments
       convertBooleans: true, // convert boolean experiments to store values of "control"/"variant" default to false
     }),
   ],
