@@ -25,6 +25,8 @@ Once configured you can query the values using the ids of the experiment and var
     - [Release new version](#release-new-version)
   - [License](#license-1)
 
+For Specific information about the growthbookFieldLevel export see its [readme](/growthbook.md)
+
 ## Installation
 
 ```sh
@@ -143,23 +145,21 @@ experiments: async () => {
   const response = await fetch('https://example.com/experiments')
   const {externalExperiments} = await response.json()
 
-  const experiments: ExperimentType[] = externalExperiments?.map(
-    (experiment) => {
-      const experimentId = experiment.id
-      const experimentLabel = experiment.name
-      const variants = experiment.variations?.map((variant) => {
-        return {
-          id: variant.variationId,
-          label: variant.name,
-        }
-      })
+  const experiments: ExperimentType[] = externalExperiments?.map((experiment) => {
+    const experimentId = experiment.id
+    const experimentLabel = experiment.name
+    const variants = experiment.variations?.map((variant) => {
       return {
-        id: experimentId,
-        label: experimentLabel,
-        variants,
+        id: variant.variationId,
+        label: variant.name,
       }
-    },
-  )
+    })
+    return {
+      id: experimentId,
+      label: experimentLabel,
+      variants,
+    }
+  })
   return experiments
 }
 ```

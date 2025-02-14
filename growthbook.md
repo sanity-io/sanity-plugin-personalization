@@ -4,23 +4,23 @@
 
 > This is a **Sanity Studio v3** plugin.
 
-This plugin allows users to add a/b/n testing experiments to individual fields connecting to the [Growthbook](https://www.growthbook.io/) A/B testing service. 
+This plugin allows users to add a/b/n testing experiments to individual fields connecting to the [Growthbook](https://www.growthbook.io/) A/B testing service.
 
-- [@sanity/personalization-plugin - growthbookFieldLevel](#@sanity/personalization-plugin---growthbookFieldLevel)
+- [@sanity/personalization-plugin - growthbookFieldLevel](#sanitypersonalization-plugin---growthbookfieldlevel)
   - [Installation](#installation)
   - [Usage](#usage)
   - [Loading Experiments](#loading-experiments)
-  - [License](#license)
-  - [Develop \& test](#develop--test)
-    - [Release new version](#release-new-version)
-  - [License](#license-1)
 
 This plugin is built on top of the `fieldLevelExperiments` export so see the main readme for details of:
+
 - [Using complex field configurations](/#using-complex-field-configurations)
 - [Validation of individual array items](/#validation-of-individual-array-items)
 - [Shape of stored data](/#shape-of-stored-data)
-- [Querying data](#querying-data)
-
+- [Querying data](/#querying-data)
+- [License](#license)
+- [Develop \& test](#develop--test)
+  - [Release new version](#release-new-version)
+- [License](#license-1)
 
 ## Installation
 
@@ -76,6 +76,3 @@ This plugin uses [@sanity/studio-secrets](https://www.npmjs.com/package/@sanity/
 Once you have entered you API key the plugin will fetch non archived features and variants of experiments for those features. If features/experiments are updated on Growthbook you will need to refresh the page.
 
 The values stored for an experiment will be the Feature Key amd the variants will stored the variation value. The exception to this is boolean values when the `convertBooleans` config flag is set to true. In that case `false` will be set as `control` and true will be set as `variant`
-
-
-
