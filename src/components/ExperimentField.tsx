@@ -19,7 +19,6 @@ const useAddExperimentAction = (
   const {onChange, active, experimentNameOverride} = props
 
   const handleAddAction = () => {
-    // console.log('showing experiment', patchActiveTrueEvent)
     onChange([set(!active, ['active'])])
   }
 
