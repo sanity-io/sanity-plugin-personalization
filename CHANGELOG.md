@@ -5,12 +5,6 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [2.1.0-field-names.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.0.0...v2.1.0-field-names.1) (2025-02-10)
-
-### Features
-
-- allow overiding of experiment and variant field names ([f42e75c](https://github.com/sanity-io/sanity-plugin-personalization/commit/f42e75c1643dee5074b5278742df086e4264c139))
-
 ## [2.0.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v1.1.1...v2.0.0) (2025-02-07)
 
 ### ⚠ BREAKING CHANGES
