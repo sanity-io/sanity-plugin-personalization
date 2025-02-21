@@ -11,6 +11,7 @@ import {ArrayInput} from './components/Array'
 import {CONFIG_DEFAULT, ExperimentProvider} from './components/ExperimentContext'
 import {ExperimentField} from './components/ExperimentField'
 import {ExperimentInput} from './components/ExperimentInput'
+import {VariantInput} from './components/VariantInput'
 import {VariantPreview} from './components/VariantPreview'
 import {FieldPluginConfig} from './types'
 import {flattenSchemaType} from './utils/flattenSchemaType'
@@ -121,6 +122,7 @@ const createVariantType = ({
     type: 'object',
     components: {
       preview: VariantPreview,
+      input: VariantInput,
     },
     fields: [
       {
