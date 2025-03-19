@@ -1,18 +1,24 @@
-import {definePlugin, isObjectInputProps} from 'sanity'
+import {definePlugin, FieldDefinition, isObjectInputProps} from 'sanity'
 
 import {Secrets} from './components/Secrets'
 import {fieldLevelExperiments} from './fieldExperiments'
 import {flattenSchemaType} from './utils/flattenSchemaType'
 import {getExperiments} from './utils/launchDarkly'
 
-export const launchDarklyFieldLevel = definePlugin<any>((config) => {
-  const {fields} = config
+export type LaunchDarklyFieldLevelConfig = {
+  fields: (string | FieldDefinition)[]
+  projectKey: string
+  tags?: string[]
+}
+
+export const launchDarklyFieldLevel = definePlugin<LaunchDarklyFieldLevelConfig>((config) => {
+  const {fields, projectKey, tags} = config
   return {
     name: 'sanity-growthbook-personalistaion-plugin-field-level-experiments',
     plugins: [
       fieldLevelExperiments({
         fields,
-        experiments: () => getExperiments(),
+        experiments: (client) => getExperiments({client, projectKey, tags}),
       }),
     ],
 
@@ -34,7 +40,7 @@ export const launchDarklyFieldLevel = definePlugin<any>((config) => {
           if (!hasExperiment) {
             return props.renderDefault(props)
           }
-          return Secrets(props)
+          return Secrets(props, 'launchdarkly')
         },
       },
     },
