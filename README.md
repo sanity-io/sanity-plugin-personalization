@@ -83,8 +83,8 @@ export default defineConfig({
 
 This will register two new fields to the schema., based on the setting passed intto `fields:`
 
-- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentId` and an array field of type:
-- `varirantsString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `experimentId`.
+- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentId` and an array field called `variants` of type:
+- `variantString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `experimentId`.
 
 Use the experiment field in your schema like this:
 
@@ -143,23 +143,21 @@ experiments: async () => {
   const response = await fetch('https://example.com/experiments')
   const {externalExperiments} = await response.json()
 
-  const experiments: ExperimentType[] = externalExperiments?.map(
-    (experiment) => {
-      const experimentId = experiment.id
-      const experimentLabel = experiment.name
-      const variants = experiment.variations?.map((variant) => {
-        return {
-          id: variant.variationId,
-          label: variant.name,
-        }
-      })
+  const experiments: ExperimentType[] = externalExperiments?.map((experiment) => {
+    const experimentId = experiment.id
+    const experimentLabel = experiment.name
+    const variants = experiment.variations?.map((variant) => {
       return {
-        id: experimentId,
-        label: experimentLabel,
-        variants,
+        id: variant.variationId,
+        label: variant.name,
       }
-    },
-  )
+    })
+    return {
+      id: experimentId,
+      label: experimentLabel,
+      variants,
+    }
+  })
   return experiments
 }
 ```
@@ -202,7 +200,7 @@ export default defineConfig({
 
 This would also create two new fields in your schema.
 
-- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field of type:
+- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field called `variants` of type:
 - `variantFeaturedProduct` an object field with a `reference` field called `value`, a string field called `variandId`, a `string` field called `experimentId`.
 
 Note that the name key in the field gets rewritten to value and is instead used to name the object field.
@@ -242,7 +240,7 @@ The custom input contains buttons which will add new array items with the experi
 ```json
 "title": {
   "default": "asdf",
-  "experimentValue": "test-1",
+  "experimentId": "test-1",
   "variants": [
     {
       "experimentId": "test-1",
@@ -264,6 +262,62 @@ Using GROQ filters you can query for a specific experitment, with a fallback to 
 ```ts
 *[_type == "post"] {
 "title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default),
+}
+```
+
+## Overwriting the experiment and variant field names
+
+If your use case does not match exactly with experiments you can overwrite the name field names for experiment and variant in the config.
+
+```ts
+import {defineConfig} from 'sanity'
+import {fieldLevelExperiments} from '@sanity/personalization-plugin'
+
+export default defineConfig({
+  //...
+  plugins: [
+    //...
+    fieldLevelExperiments({
+      fields: ['string'],
+      experiments: [experiment1, experiment2],
+      experimentNameOverride: 'audience',
+      variantNameOverride: 'segment',
+    }),
+  ],
+})
+```
+
+This would also create two new fields in your schema.
+
+- `audienceString` an Object field with `string` field called `default`, a `string` field called `audienceId` and an array field called `segments` of type:
+- `segmentString` an object field with a `string` field called `value`, a string field called `segmentId`, a `string` field called `audienceId`.
+
+the data will be stored as
+
+```json
+"title": {
+  "default": "asdf",
+  "audienceId": "test-1",
+  "segments": [
+    {
+      "audienceId": "test-1",
+      "value": "asdf",
+      "segmentId": "test-1-a"
+    },
+    {
+      "audienceId": "test-1",
+      "segmentId": "test-1-b",
+      "value": "qwer"
+    }
+  ]
+}
+```
+
+This will also affect the query you write to fetch data to be:
+
+```ts
+*[_type == "post"] {
+"title":coalesce(title.segments[audienceId == $audience && segmentId == $segment][0].value, title.default),
 }
 ```
 

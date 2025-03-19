@@ -5,6 +5,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.0.0...v2.1.0) (2025-02-21)
+
+### Features
+
+- added ability to copy default to a variant ([c1ff90a](https://github.com/sanity-io/sanity-plugin-personalization/commit/c1ff90a0cf000f8bb2fa455077d4a4e605820650))
+- allow overiding of experiment and variant field names ([f42e75c](https://github.com/sanity-io/sanity-plugin-personalization/commit/f42e75c1643dee5074b5278742df086e4264c139))
+
 ## [2.0.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v1.1.1...v2.0.0) (2025-02-07)
 
 ### ⚠ BREAKING CHANGES

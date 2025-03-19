@@ -23,11 +23,15 @@ export type FieldPluginConfig = {
   fields: (string | FieldDefinition)[]
   experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
   apiVersion?: string
+  experimentNameOverride?: string
+  variantNameOverride?: string
+  variantId?: string
+  variantArrayName?: string
+  experimentId?: string
 }
 
 export type VariantPreviewProps = Omit<PreviewProps, 'SchemaType'> & {
-  experiment: string
-  variant: string
+  [key: string]: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any
 }
@@ -39,15 +43,16 @@ export type ExperimentContextProps = Required<FieldPluginConfig> & {
 }
 
 export type ArrayInputProps = ArrayOfObjectsInputProps & {
-  objectName: string
+  variantName: string
+  variantId: string
+  experimentId: string
 }
 
 export type ObjectFieldWithPath = ObjectField<SchemaType> & {path: Path}
 
 export type VariantGeneric<T> = {
+  [key: string]: string | T | undefined
   _type: string
-  variantId?: string
-  experimentId?: string
   value?: T
 }
 
@@ -55,11 +60,15 @@ export type ExperimentGeneric<T> = {
   _type: string
   default?: T
   experimentValue?: string
-  variants?: Array<
-    {
-      _key: string
-    } & VariantGeneric<T>
-  >
+  [key: string]:
+    | Array<
+        {
+          _key: string
+        } & VariantGeneric<T>
+      >
+    | string
+    | T
+    | undefined
 }
 
 export type LaunchDarklyFlagItem = {
