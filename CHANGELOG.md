@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.0-launch-darkly.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.1.0...v2.2.0-launch-darkly.1) (2025-03-19)
+
+### Features
+
+- use sanity secrets, ability to filter and paginate request to LD ([05b95db](https://github.com/sanity-io/sanity-plugin-personalization/commit/05b95db752a5510ea03344470b3043427b0dc7fc))
+
 ## [2.1.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.0.0...v2.1.0) (2025-02-21)
 
 ### Features
