@@ -41,7 +41,7 @@ export const getExperiments = async ({
       label: flag.name,
       variants: flag.variations.map((variation) => ({
         id: variation.value,
-        label: variation.name,
+        label: variation.name ?? variation.value,
       })),
     }))
     featureExperiments.push(...experiments)
