@@ -44,6 +44,7 @@ const createExperimentType = ({
           {...props}
           experimentId={experimentId}
           experimentNameOverride={experimentNameOverride}
+          variantNameOverride={variantNameOverride}
         />
       ),
     },

@@ -25,11 +25,11 @@ export const ExperimentInput = (props: StringInputProps & {variantNameOverride: 
 
   const id = useFormValue(['_id']) as string
   const aditionalChangePath = useMemo(
-    () => [...props.path.slice(0, -1), props.variantNameOverride],
+    () => [...props.path.slice(0, -1), `${props.variantNameOverride}s`],
     [props.variantNameOverride, props.path],
   )
-  const subValues = useFormValue(aditionalChangePath)
 
+  const subValues = useFormValue(aditionalChangePath)
   const {patch} = useDocumentOperation(id.replace('drafts.', ''), props.schemaType.name)
 
   const handleChange = useCallback(
