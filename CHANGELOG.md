@@ -5,18 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [2.1.0-growthbook.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.0.0...v2.1.0-growthbook.1) (2025-02-14)
+## [2.1.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.0.0...v2.1.0) (2025-02-21)
 
 ### Features
 
-- added boolena conversion check ([51a3a59](https://github.com/sanity-io/sanity-plugin-personalization/commit/51a3a59199992269dfe6dcf8f054f0f278bb4d7c))
-- added growthbook flied experiments as a plugin ([d28d2cc](https://github.com/sanity-io/sanity-plugin-personalization/commit/d28d2cc7875c2addbfb749f55e69221822e035f5))
-- new config option, updated experiment fetching ([ef300fb](https://github.com/sanity-io/sanity-plugin-personalization/commit/ef300fbcb2116e2b49a13a17195a09b6e479ea7e))
-
-### Bug Fixes
-
-- get experiments from feature flags for growthbook and store values that will be used by FE ([eb40e0b](https://github.com/sanity-io/sanity-plugin-personalization/commit/eb40e0baeeb536cdf6a74f14dd5007c16e041426))
-- only show secret input when finished loading ([a0eb18d](https://github.com/sanity-io/sanity-plugin-personalization/commit/a0eb18d494d4db3f92b09ce1b1edde846ee8c21d))
+- added ability to copy default to a variant ([c1ff90a](https://github.com/sanity-io/sanity-plugin-personalization/commit/c1ff90a0cf000f8bb2fa455077d4a4e605820650))
+- allow overiding of experiment and variant field names ([f42e75c](https://github.com/sanity-io/sanity-plugin-personalization/commit/f42e75c1643dee5074b5278742df086e4264c139))
 
 ## [2.0.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v1.1.1...v2.0.0) (2025-02-07)
 
