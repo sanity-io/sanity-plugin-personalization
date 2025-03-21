@@ -34,23 +34,22 @@ const useAddExperimentAction = (
 
 const useRemoveExperimentAction = (
   props: DocumentFieldActionProps &
-    PatchStuff & {experimentNameOverride: string; experimentId: string; active: boolean},
+    PatchStuff & {
+      experimentNameOverride: string
+      experimentId: string
+      active: boolean
+      variantNameOverride: string
+    },
 ): DocumentFieldActionItem => {
-  const {onChange, active, experimentId, experimentNameOverride} = props
-  const patchActiveFalseEvent = () => {
+  const {onChange, active, experimentId, experimentNameOverride, variantNameOverride} = props
+
+  const handleClearAction = useCallback(() => {
     const activeId = ['active']
-    return set(!active, activeId)
-  }
-  const patchClearEvent = () => {
     const experiment = [experimentId]
-    const variants = [experimentNameOverride]
-    return [unset(experiment), unset(variants)]
-  }
-  const handleClearAction = () => {
-    const clearEvents = patchClearEvent()
-    const activeEvent = patchActiveFalseEvent()
-    onChange([activeEvent, ...clearEvents])
-  }
+    const variants = [`${variantNameOverride}s`]
+    onChange([set(!active, activeId), unset(experiment), unset(variants)])
+  }, [onChange, active, experimentId, variantNameOverride])
+
   return {
     title: `Remove ${experimentNameOverride}`,
     type: 'action',
@@ -66,7 +65,13 @@ const createActions = ({
   active,
   experimentNameOverride,
   experimentId,
-}: PatchStuff & {active?: boolean; experimentNameOverride: string; experimentId: string}) => {
+  variantNameOverride,
+}: PatchStuff & {
+  active?: boolean
+  experimentNameOverride: string
+  experimentId: string
+  variantNameOverride: string
+}) => {
   const removeAction = defineDocumentFieldAction({
     name: `Remove ${experimentNameOverride}`,
     useAction: (props) =>
@@ -77,6 +82,7 @@ const createActions = ({
         inputId,
         experimentNameOverride,
         experimentId,
+        variantNameOverride,
       }),
   })
   const addAction = defineDocumentFieldAction({
@@ -95,10 +101,14 @@ const createActions = ({
 }
 
 export const ExperimentField = (
-  props: ObjectFieldProps & {experimentNameOverride: string; experimentId: string},
+  props: ObjectFieldProps & {
+    experimentNameOverride: string
+    experimentId: string
+    variantNameOverride: string
+  },
 ) => {
   const {onChange} = props.inputProps
-  const {inputId, experimentNameOverride, experimentId} = props
+  const {inputId, experimentNameOverride, experimentId, variantNameOverride} = props
   const active = props.value?.active as boolean | undefined
 
   const actionProps = useMemo(
@@ -108,8 +118,9 @@ export const ExperimentField = (
       active,
       experimentNameOverride,
       experimentId,
+      variantNameOverride,
     }),
-    [onChange, inputId, active, experimentNameOverride, experimentId],
+    [onChange, inputId, active, experimentNameOverride, experimentId, variantNameOverride],
   )
 
   const memoizedActions = useMemo(() => {
