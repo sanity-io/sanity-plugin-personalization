@@ -1,3 +1,4 @@
+import {Card, Text} from '@sanity/ui'
 import {FormEvent, useCallback, useMemo} from 'react'
 import {
   FormPatch,
@@ -20,7 +21,9 @@ const formatlistOptions = (experiments: ExperimentType[]): SelectOption[] =>
     value: experiment.id,
   }))
 
-export const ExperimentInput = (props: StringInputProps & {variantNameOverride: string}) => {
+export const ExperimentInput = (
+  props: StringInputProps & {variantNameOverride: string; experimentNameOverride: string},
+) => {
   const {experiments} = useExperimentContext()
 
   const id = useFormValue(['_id']) as string
@@ -56,7 +59,14 @@ export const ExperimentInput = (props: StringInputProps & {variantNameOverride: 
     [patch, subValues, aditionalChangePath],
   )
 
-  if (!experiments.length) return <></>
+  if (!experiments.length)
+    return (
+      <Card padding={[3, 3, 4]} radius={2} shadow={1} tone="caution">
+        <Text align="center" size={[2, 2, 3]}>
+          There are no defined {props.experimentNameOverride}s
+        </Text>
+      </Card>
+    )
 
   return (
     <Select {...props} listOptions={formatlistOptions(experiments)} handleChange={handleChange} />
