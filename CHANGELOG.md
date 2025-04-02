@@ -5,6 +5,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.0-launch-darkly.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.2.0...v2.3.0-launch-darkly.1) (2025-04-02)
+
+### Features
+
+- use sanity secrets, ability to filter and paginate request to LD ([05b95db](https://github.com/sanity-io/sanity-plugin-personalization/commit/05b95db752a5510ea03344470b3043427b0dc7fc))
+
+### Bug Fixes
+
+- use value for variant label if no label ([6ed4175](https://github.com/sanity-io/sanity-plugin-personalization/commit/6ed417505105a7a5b9049fac273612019dfe123f))
 
 ## [2.2.0-launch-darkly.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.1.0...v2.2.0-launch-darkly.1) (2025-03-19)
 
@@ -17,7 +26,6 @@ All notable changes to this project will be documented in this file. See
 ### Features
 
 - added message to warn there are no defeined experiments ([9302f08](https://github.com/sanity-io/sanity-plugin-personalization/commit/9302f0817327d33feb8ff26661ab18391fb4ff9d))
-
 
 ## [2.1.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.0.0...v2.1.0) (2025-02-21)
 
