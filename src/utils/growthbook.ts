@@ -59,16 +59,22 @@ export const getExperiments = async ({
         return undefined
       }
 
-      const variations = new Set<VariantType>()
+      const variations: VariantType[] = []
+      const uniqueValues = new Set<string>()
+
       experiments.forEach((experiment) => {
         experiment?.variations.forEach((variant) => {
-          variations.add({
-            id: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
-            label: convertBooleans ? getBooleanConversion(variant.value) : variant.value,
-          })
+          const value = convertBooleans ? getBooleanConversion(variant.value) : variant.value
+          if (!uniqueValues.has(value)) {
+            uniqueValues.add(value)
+            variations.push({
+              id: value,
+              label: value,
+            })
+          }
         })
       })
-      const value = {id: feature.id, label: feature.id, variants: [...variations]}
+      const value = {id: feature.id, label: feature.id, variants: variations}
 
       featureExperiments.push(value)
       return undefined
