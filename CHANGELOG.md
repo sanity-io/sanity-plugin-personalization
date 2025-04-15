@@ -18,6 +18,11 @@ All notable changes to this project will be documented in this file. See
 - get experiments from feature flags for growthbook and store values that will be used by FE ([eb40e0b](https://github.com/sanity-io/sanity-plugin-personalization/commit/eb40e0baeeb536cdf6a74f14dd5007c16e041426))
 - only show secret input when finished loading ([a0eb18d](https://github.com/sanity-io/sanity-plugin-personalization/commit/a0eb18d494d4db3f92b09ce1b1edde846ee8c21d))
 - resolved issue with too many re renders on experiments ([24f018e](https://github.com/sanity-io/sanity-plugin-personalization/commit/24f018ed3028ffd36f3b86975543a1a9cdca9239))
+## [2.2.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.1.0...v2.2.0) (2025-03-26)
+
+### Features
+
+- added message to warn there are no defeined experiments ([9302f08](https://github.com/sanity-io/sanity-plugin-personalization/commit/9302f0817327d33feb8ff26661ab18391fb4ff9d))
 
 ## [2.1.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.0.0...v2.1.0) (2025-02-21)
 

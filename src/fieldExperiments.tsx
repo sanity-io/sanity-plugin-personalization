@@ -70,7 +70,11 @@ const createExperimentType = ({
         type: 'string',
         components: {
           input: (props) => (
-            <ExperimentInput {...props} variantNameOverride={variantNameOverride} />
+            <ExperimentInput
+              {...props}
+              experimentNameOverride={experimentNameOverride}
+              variantNameOverride={variantNameOverride}
+            />
           ),
         },
         hidden: ({parent}) => {
