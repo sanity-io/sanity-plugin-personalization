@@ -1,10 +1,10 @@
 import {SanityClient} from 'sanity'
 
-import {GrowthbookABConfig} from '../growthbookFieldExperiments'
 import {ExperimentType, GrowthbookFeature, VariantType} from '../types'
+import {GrowthbookABConfig} from './types'
 
 const getBooleanConversion = (value: string) => {
-  // this way or the other way around?
+  // control is false
   if (value === 'true') {
     return 'variant'
   } else if (value === 'false') {
@@ -19,7 +19,11 @@ export const getExperiments = async ({
   baseUrl,
   project,
   convertBooleans,
-}: Omit<GrowthbookABConfig, 'fields'> & {client: SanityClient}): Promise<ExperimentType[]> => {
+  tags,
+}: Omit<GrowthbookABConfig, 'fields' | 'baseUrl'> & {
+  client: SanityClient
+  baseUrl: string
+}): Promise<ExperimentType[]> => {
   const query = `*[_id == 'secrets.growthbook'][0].secrets.apiKey`
 
   const secret = await client.fetch(query) // secret is stored in the content lake using @sanity/studio-secrets
@@ -28,7 +32,7 @@ export const getExperiments = async ({
   const featureExperiments: ExperimentType[] = []
   let hasMore = true
   let offset = 0
-  const url = new URL(baseUrl ?? 'https://api.growthbook.io/api/v1/features')
+  const url = new URL(`${baseUrl}/features`)
   if (project) {
     url.searchParams.set('projectId', project)
   }
@@ -51,6 +55,10 @@ export const getExperiments = async ({
       if (feature.archived) {
         return undefined
       }
+      if (tags && feature.tags && !feature.tags.some((tag) => tags.includes(tag))) {
+        return undefined
+      }
+
       const experiments = feature.environments[environment]?.rules.filter(
         (experiment) => experiment.type === 'experiment-ref' || experiment.type === 'experiment',
       )
@@ -80,5 +88,6 @@ export const getExperiments = async ({
       return undefined
     })
   }
-  return featureExperiments
+  const sortedFeatureExperiments = featureExperiments.sort((a, b) => a.id.localeCompare(b.id))
+  return sortedFeatureExperiments
 }

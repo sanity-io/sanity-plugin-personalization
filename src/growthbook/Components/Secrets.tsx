@@ -2,7 +2,7 @@ import {SettingsView, useSecrets} from '@sanity/studio-secrets'
 import {useEffect, useState} from 'react'
 import {ObjectInputProps} from 'sanity'
 
-import {useExperimentContext} from './ExperimentContext'
+import {useGrowthbookContext} from './GrowthbookContext'
 
 const namespace = 'growthbook'
 
@@ -15,7 +15,7 @@ const pluginConfigKeys = [
 
 export const Secrets = (props: ObjectInputProps) => {
   const {secrets, loading} = useSecrets(namespace) as {secrets: {apiKey: string}; loading: boolean}
-  const {setSecret} = useExperimentContext()
+  const {setSecret} = useGrowthbookContext()
   const [showSettings, setShowSettings] = useState<boolean>(false)
 
   useEffect(() => {

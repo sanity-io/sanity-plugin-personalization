@@ -1,4 +1,3 @@
-import {Dispatch, SetStateAction} from 'react'
 import {
   ArrayOfObjectsInputProps,
   FieldDefinition,
@@ -40,8 +39,6 @@ export type VariantPreviewProps = Omit<PreviewProps, 'SchemaType'> & {
 
 export type ExperimentContextProps = Required<FieldPluginConfig> & {
   experiments: ExperimentType[]
-  setSecret: Dispatch<SetStateAction<string | undefined>>
-  secret: string | undefined
 }
 
 export type ArrayInputProps = ArrayOfObjectsInputProps & {
