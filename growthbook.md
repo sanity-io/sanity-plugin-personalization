@@ -45,6 +45,7 @@ export default defineConfig({
       environment: 'production', // the growthbook environment
       projectId: 'string', // optional filter parameter for fetching features/experiments
       convertBooleans: true, // convert boolean experiments to store values of "control"/"variant" default to false
+      tags: ['string'], // optional filter, if included feature must have at least one of the tag specified
     }),
   ],
 })
