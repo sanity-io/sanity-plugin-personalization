@@ -1,18 +1,18 @@
 import {definePlugin, isObjectInputProps} from 'sanity'
 
-import {fieldLevelExperiments} from '../fieldExperiments'
+import {fieldLevelExperiments as baseFieldLevelExperiments} from '../fieldExperiments'
 import {flattenSchemaType} from '../utils/flattenSchemaType'
 import {GROWTHBOOK_CONFIG_DEFAULT, GrowthbookProvider} from './Components/GrowthbookContext'
 import {GrowthbookABConfig} from './types'
 import {getExperiments} from './utils'
 
-export const growthbookFieldLevel = definePlugin<GrowthbookABConfig>((config) => {
+export const fieldLevelExperiments = definePlugin<GrowthbookABConfig>((config) => {
   const pluginConfig = {...GROWTHBOOK_CONFIG_DEFAULT, ...config}
   const {fields, environment, project, convertBooleans, baseUrl, tags} = pluginConfig
   return {
     name: 'sanity-growthbook-personalistaion-plugin-field-level-experiments',
     plugins: [
-      fieldLevelExperiments({
+      baseFieldLevelExperiments({
         fields,
         experiments: (client) =>
           getExperiments({client, environment, baseUrl, project, convertBooleans, tags}),
