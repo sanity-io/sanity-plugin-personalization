@@ -1,4 +1,4 @@
-# @sanity/personalization-plugin - growthbookFieldLevel
+# @sanity/personalization-plugin - GrowthBook
 
 ## Previously know as @sanity/personalisation-plugin
 
@@ -6,7 +6,7 @@
 
 This plugin allows users to add a/b/n testing experiments to individual fields connecting to the [Growthbook](https://www.growthbook.io/) A/B testing service.
 
-- [@sanity/personalization-plugin - growthbookFieldLevel](#sanitypersonalization-plugin---growthbookfieldlevel)
+- [@sanity/personalization-plugin - GrowthBook](#sanitypersonalization-plugin---GrowthBook)
   - [Installation](#installation)
   - [Usage](#usage)
   - [Loading Experiments](#loading-experiments)
@@ -34,13 +34,13 @@ Add it as a plugin in `sanity.config.ts` (or .js):
 
 ```ts
 import {defineConfig} from 'sanity'
-import {growthbookFieldLevel} from '@sanity/personalization-plugin'
+import {fieldLevelExperiments} from "@sanity/personalization-plugin/growthbook"
 
 export default defineConfig({
   //...
   plugins: [
     //...
-    growthbookFieldLevel({
+    fieldLevelExperiments({
       fields: ['string'],
       environment: 'production', // the growthbook environment
       projectId: 'string', // optional filter parameter for fetching features/experiments
