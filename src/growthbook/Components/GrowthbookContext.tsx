@@ -5,7 +5,7 @@ import {GrowthbookABConfig, GrowthbookContextProps} from '../types'
 import {Secrets} from './Secrets'
 
 export const GROWTHBOOK_CONFIG_DEFAULT = {
-  baseUrl: 'https://cdn.growthbook.io/api/v1',
+  baseUrl: 'https://api.growthbook.io/api/v1',
 }
 
 export const GrowthbookContext = createContext<GrowthbookContextProps>({
