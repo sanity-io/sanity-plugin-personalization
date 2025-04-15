@@ -1,6 +1,7 @@
 import {SanityClient} from 'sanity'
 
 import {ExperimentType, GrowthbookFeature, VariantType} from '../types'
+import {namespace, pluginConfigKeys} from './Components/Secrets'
 import {GrowthbookABConfig} from './types'
 
 const getBooleanConversion = (value: string) => {
@@ -24,7 +25,7 @@ export const getExperiments = async ({
   client: SanityClient
   baseUrl: string
 }): Promise<ExperimentType[]> => {
-  const query = `*[_id == 'secrets.growthbook'][0].secrets.apiKey`
+  const query = `*[_id == 'secrets.${namespace}'][0].secrets.${pluginConfigKeys[0].key}`
 
   const secret = await client.fetch(query) // secret is stored in the content lake using @sanity/studio-secrets
   if (!secret) return []

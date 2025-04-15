@@ -4,9 +4,9 @@ import {ObjectInputProps} from 'sanity'
 
 import {useGrowthbookContext} from './GrowthbookContext'
 
-const namespace = 'growthbook'
+export const namespace = 'growthbook'
 
-const pluginConfigKeys = [
+export const pluginConfigKeys = [
   {
     key: 'apiKey',
     title: 'Your secret API key',
