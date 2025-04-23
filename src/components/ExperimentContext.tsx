@@ -1,5 +1,5 @@
 import equal from 'fast-deep-equal'
-import {createContext, useContext, useMemo, useState} from 'react'
+import {createContext, useContext, useMemo} from 'react'
 import {type ObjectInputProps, useClient, useWorkspace} from 'sanity'
 import {suspend} from 'suspend-react'
 
@@ -21,8 +21,6 @@ export const CONFIG_DEFAULT = {
 export const ExperimentContext = createContext<ExperimentContextProps>({
   ...CONFIG_DEFAULT,
   experiments: [],
-  setSecret: () => undefined,
-  secret: undefined,
 })
 
 export function useExperimentContext() {
@@ -35,7 +33,6 @@ type ExperimentProps = ObjectInputProps & {
 
 export function ExperimentProvider(props: ExperimentProps) {
   const {experimentFieldPluginConfig} = props
-  const [secret, setSecret] = useState<string | undefined>()
 
   const client = useClient({apiVersion: experimentFieldPluginConfig.apiVersion})
   const workspace = useWorkspace()
@@ -51,13 +48,13 @@ export function ExperimentProvider(props: ExperimentProps) {
           }
           return experimentFieldPluginConfig.experiments
         },
-        [workspace, secret],
+        [workspace],
         {equal},
       )
 
   const context = useMemo(
-    () => ({...experimentFieldPluginConfig, experiments, secret, setSecret}),
-    [experimentFieldPluginConfig, experiments, secret, setSecret],
+    () => ({...experimentFieldPluginConfig, experiments}),
+    [experimentFieldPluginConfig, experiments],
   )
 
   return (

@@ -2,8 +2,9 @@ import {SettingsView, useSecrets} from '@sanity/studio-secrets'
 import {useEffect, useState} from 'react'
 import {ObjectInputProps} from 'sanity'
 
-import {useExperimentContext} from './ExperimentContext'
+import {useLaunchDarklyContext} from './LaunchDarklyContext'
 
+const namespace = 'launchdarkly'
 const pluginConfigKeys = [
   {
     key: 'apiKey',
@@ -11,9 +12,9 @@ const pluginConfigKeys = [
   },
 ]
 
-export const Secrets = (props: ObjectInputProps, namespace: string) => {
+export const Secrets = (props: ObjectInputProps) => {
   const {secrets, loading} = useSecrets(namespace) as {secrets: {apiKey: string}; loading: boolean}
-  const {setSecret} = useExperimentContext()
+  const {setSecret} = useLaunchDarklyContext()
   const [showSettings, setShowSettings] = useState<boolean>(false)
 
   useEffect(() => {
