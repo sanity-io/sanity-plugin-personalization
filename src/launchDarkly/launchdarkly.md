@@ -34,7 +34,7 @@ Add it as a plugin in `sanity.config.ts` (or .js):
 
 ```ts
 import {defineConfig} from 'sanity'
-import {launchDarklyFieldLevel} from '@sanity/personalization-plugin'
+import {fieldLevelExperiments} from '@sanity/personalization-plugin/launchDarkly'
 
 export default defineConfig({
   //...
@@ -42,8 +42,8 @@ export default defineConfig({
     //...
     launchDarklyFieldLevel({
       fields: ['string'],
-      projectKey: 'string', // optional filter parameter for fetching features/experiments
-      tags: ['string'] // filters the list to flags that have all of the tags in the list
+      projectKey: 'string', // required filter parameter for fetching features/variants
+      tags: ['string'] //optional parameter that filters the list to flags that have all of the tags in the list
     }),
   ],
 })
@@ -51,10 +51,10 @@ export default defineConfig({
 
 This will register two new fields to the schema., based on the setting passed into `fields:`
 
-- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentId` and an array field of type:
-- `varirantsString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `experimentId`.
+- `flagString` an Object field with `string` field called `default`, a `string` field called `flagId` and an array field of type:
+- `variantsString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `flagId`.
 
-Use the experiment field in your schema like this:
+Use the flag field in your schema like this:
 
 ```ts
 //for Example in post.ts
@@ -62,7 +62,7 @@ Use the experiment field in your schema like this:
 fields: [
   defineField({
     name: 'title',
-    type: 'experimentString',
+    type: 'flagString',
   }),
 ]
 ```
@@ -71,6 +71,6 @@ fields: [
 
 This plugin uses [@sanity/studio-secrets](https://www.npmjs.com/package/@sanity/studio-secrets) for storing your Launch Darkly API key. The first time you open a document that has an experiment you will be asked to provide your API key. This is stored in a private document on the dataset.
 
-Once you have entered you API key the plugin will fetch feature flags and variants flags. If features/experiments are updated on LaunchDarkly you will need to refresh the page.
+Once you have entered you API key the plugin will fetch feature flags and variants flags. If features/variants are updated on LaunchDarkly you will need to refresh the page.
 
-The values stored for an experiment will be the Feature Key amd the variants will stored the variation value.
+The values stored for an flag will be the Feature Key amd the variants will stored the variation value.

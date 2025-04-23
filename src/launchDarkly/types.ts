@@ -17,7 +17,7 @@ export type LaunchDarklyFlagItem = {
   _version: number
   creationDate: number
   variations: Array<{
-    value: boolean
+    value: boolean | string | number
     _id: string
     name: string
   }>
