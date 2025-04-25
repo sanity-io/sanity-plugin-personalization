@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.0-launch-darkly.2](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.3.0-launch-darkly.1...v2.3.0-launch-darkly.2) (2025-04-23)
+
+### Features
+
+- movec LaunchDarkly export to own subpath and refactored ([021e96c](https://github.com/sanity-io/sanity-plugin-personalization/commit/021e96c4e5c5bfa7d070880aa84cb88efff565cf))
+
 ## [2.3.0-launch-darkly.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.2.0...v2.3.0-launch-darkly.1) (2025-04-02)
 
 ### Features
