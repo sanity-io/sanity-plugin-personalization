@@ -1,4 +1,5 @@
 import {CloseIcon} from '@sanity/icons'
+import {useCallback, useMemo} from 'react'
 import {GiSoapExperiment} from 'react-icons/gi'
 import {
   defineDocumentFieldAction,
@@ -18,9 +19,9 @@ const useAddExperimentAction = (
 ): DocumentFieldActionItem => {
   const {onChange, active, experimentNameOverride} = props
 
-  const handleAddAction = () => {
+  const handleAddAction = useCallback(() => {
     onChange([set(!active, ['active'])])
-  }
+  }, [onChange, active])
 
   return {
     title: `Add ${experimentNameOverride}`,
@@ -33,23 +34,21 @@ const useAddExperimentAction = (
 
 const useRemoveExperimentAction = (
   props: DocumentFieldActionProps &
-    PatchStuff & {experimentNameOverride: string; experimentId: string; active: boolean},
+    PatchStuff & {
+      experimentNameOverride: string
+      experimentId: string
+      active: boolean
+      variantNameOverride: string
+    },
 ): DocumentFieldActionItem => {
-  const {onChange, active, experimentId, experimentNameOverride} = props
-  const patchActiveFalseEvent = () => {
+  const {onChange, active, experimentId, experimentNameOverride, variantNameOverride} = props
+  const handleClearAction = useCallback(() => {
     const activeId = ['active']
-    return set(!active, activeId)
-  }
-  const patchClearEvent = () => {
     const experiment = [experimentId]
-    const variants = [experimentNameOverride]
-    return [unset(experiment), unset(variants)]
-  }
-  const handleClearAction = () => {
-    const clearEvents = patchClearEvent()
-    const activeEvent = patchActiveFalseEvent()
-    onChange([activeEvent, ...clearEvents])
-  }
+    const variants = [`${variantNameOverride}s`]
+    onChange([set(!active, activeId), unset(experiment), unset(variants)])
+  }, [onChange, active, experimentId, experimentNameOverride, variantNameOverride])
+
   return {
     title: `Remove ${experimentNameOverride}`,
     type: 'action',
@@ -59,13 +58,19 @@ const useRemoveExperimentAction = (
   }
 }
 
-const newActions = ({
+const createActions = ({
   onChange,
   inputId,
   active,
   experimentNameOverride,
   experimentId,
-}: PatchStuff & {active?: boolean; experimentNameOverride: string; experimentId: string}) => {
+  variantNameOverride,
+}: PatchStuff & {
+  active?: boolean
+  experimentNameOverride: string
+  experimentId: string
+  variantNameOverride: string
+}) => {
   const removeAction = defineDocumentFieldAction({
     name: `Remove ${experimentNameOverride}`,
     useAction: (props) =>
@@ -76,6 +81,7 @@ const newActions = ({
         inputId,
         experimentNameOverride,
         experimentId,
+        variantNameOverride,
       }),
   })
   const addAction = defineDocumentFieldAction({
@@ -97,20 +103,39 @@ const newActions = ({
 }
 
 export const ExperimentField = (
-  props: ObjectFieldProps & {experimentNameOverride: string; experimentId: string},
+  props: ObjectFieldProps & {
+    experimentNameOverride: string
+    experimentId: string
+    variantNameOverride: string
+  },
 ) => {
   const {onChange} = props.inputProps
-  const {inputId, experimentNameOverride, experimentId} = props
+  const {inputId, experimentNameOverride, experimentId, variantNameOverride} = props
   const active = props.value?.active as boolean | undefined
 
-  const oldActions = props.actions || []
+  const actionProps = useMemo(
+    () => ({
+      onChange,
+      inputId,
+      active,
+      experimentNameOverride,
+      experimentId,
+      variantNameOverride,
+    }),
+    [onChange, inputId, active, experimentNameOverride, experimentId, variantNameOverride],
+  )
 
-  const withActionProps = {
-    ...props,
-    actions: [
-      newActions({onChange, inputId, active, experimentNameOverride, experimentId}),
-      ...oldActions,
-    ],
-  }
+  const memoizedActions = useMemo(() => {
+    const oldActions = props.actions || []
+    return [createActions(actionProps), ...oldActions]
+  }, [actionProps, props.actions])
+
+  const withActionProps = useMemo(
+    () => ({
+      ...props,
+      actions: memoizedActions,
+    }),
+    [props, memoizedActions],
+  )
   return props.renderDefault(withActionProps)
 }
