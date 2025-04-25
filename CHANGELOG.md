@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.2.0...v2.2.1) (2025-04-25)
+
+### Bug Fixes
+
+- works with content releases and removes variants if experiment changes" ([75c9a78](https://github.com/sanity-io/sanity-plugin-personalization/commit/75c9a78fb67feb9ab461c0c6f67943155e29ad2c))
+
 ## [2.2.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.1.0...v2.2.0) (2025-03-26)
 
 ### Features
