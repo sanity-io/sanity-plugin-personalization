@@ -1,6 +1,6 @@
 {
   "name": "@sanity/personalization-plugin",
-  "version": "2.2.0",
+  "version": "2.3.0-launch-darkly.2",
   "description": "Plugin to help with personalization, a/b testing when using Sanity",
   "keywords": [
     "sanity",
@@ -24,6 +24,11 @@
       "import": "./dist/index.mjs",
       "default": "./dist/index.js"
     },
+    "./launchDarkly": {
+      "source": "./src/launchDarkly/index.ts",
+      "import": "./dist/launchDarkly/index.mjs",
+      "default": "./dist/launchDarkly/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
@@ -45,6 +50,7 @@
   },
   "dependencies": {
     "@sanity/incompatible-plugin": "^1.0.4",
+    "@sanity/studio-secrets": "^3.0.1",
     "@sanity/ui": "^2.8.19",
     "@sanity/uuid": "^3.0.2",
     "fast-deep-equal": "^3.1.3",
