@@ -42,7 +42,6 @@ const useRemoveExperimentAction = (
     },
 ): DocumentFieldActionItem => {
   const {onChange, active, experimentId, experimentNameOverride, variantNameOverride} = props
-
   const handleClearAction = useCallback(() => {
     const activeId = ['active']
     const experiment = [experimentId]
@@ -135,6 +134,5 @@ export const ExperimentField = (
     }),
     [props, memoizedActions],
   )
-
   return props.renderDefault(withActionProps)
 }

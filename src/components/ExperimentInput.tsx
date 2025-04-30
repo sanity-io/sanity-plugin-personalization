@@ -2,6 +2,7 @@ import {Card, Text} from '@sanity/ui'
 import {FormEvent, useCallback, useMemo} from 'react'
 import {
   FormPatch,
+  getPublishedId,
   PatchEvent,
   set,
   StringInputProps,
@@ -27,13 +28,13 @@ export const ExperimentInput = (
   const {experiments} = useExperimentContext()
 
   const id = useFormValue(['_id']) as string
-  const aditionalChangePath = useMemo(
+  const additionalChangePath = useMemo(
     () => [...props.path.slice(0, -1), `${props.variantNameOverride}s`],
     [props.variantNameOverride, props.path],
   )
+  const subValues = useFormValue(additionalChangePath)
 
-  const subValues = useFormValue(aditionalChangePath)
-  const {patch} = useDocumentOperation(id.replace('drafts.', ''), props.schemaType.name)
+  const {patch} = useDocumentOperation(getPublishedId(id), props.schemaType.name)
 
   const handleChange = useCallback(
     (
@@ -51,12 +52,12 @@ export const ExperimentInput = (
 
       if (subValues) {
         const patchEvent = {
-          unset: [aditionalChangePath.join('.')],
+          unset: [additionalChangePath.join('.')],
         }
         patch.execute([patchEvent])
       }
     },
-    [patch, subValues, aditionalChangePath],
+    [patch, subValues, additionalChangePath],
   )
 
   if (!experiments.length)
