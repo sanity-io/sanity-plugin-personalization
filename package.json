@@ -29,6 +29,11 @@
       "import": "./dist/launchDarkly/index.mjs",
       "default": "./dist/launchDarkly/index.js"
     },
+    "./growthbook": {
+      "source": "./src/growthbook/index.ts",
+      "import": "./dist/growthbook/index.mjs",
+      "default": "./dist/growthbook/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",

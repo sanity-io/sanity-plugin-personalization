@@ -25,6 +25,8 @@ Once configured you can query the values using the ids of the experiment and var
     - [Release new version](#release-new-version)
   - [License](#license-1)
 
+For Specific information about the growthbookFieldLevel export see its [readme](/growthbook.md)
+
 ## Installation
 
 ```sh

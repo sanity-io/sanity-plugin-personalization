@@ -42,7 +42,6 @@ const useRemoveExperimentAction = (
     },
 ): DocumentFieldActionItem => {
   const {onChange, active, experimentId, experimentNameOverride, variantNameOverride} = props
-
   const handleClearAction = useCallback(() => {
     const activeId = ['active']
     const experiment = [experimentId]
@@ -97,10 +96,7 @@ const createActions = ({
         experimentId,
       }),
   })
-  if (active) {
-    return removeAction
-  }
-  return addAction
+  return active ? removeAction : addAction
 }
 
 export const ExperimentField = (
