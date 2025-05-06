@@ -24,6 +24,11 @@
       "import": "./dist/index.mjs",
       "default": "./dist/index.js"
     },
+    "./growthbook": {
+      "source": "./src/growthbook/index.ts",
+      "import": "./dist/growthbook/index.mjs",
+      "default": "./dist/growthbook/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
@@ -45,6 +50,7 @@
   },
   "dependencies": {
     "@sanity/incompatible-plugin": "^1.0.4",
+    "@sanity/studio-secrets": "^3.0.0",
     "@sanity/ui": "^2.8.19",
     "@sanity/uuid": "^3.0.2",
     "fast-deep-equal": "^3.1.3",

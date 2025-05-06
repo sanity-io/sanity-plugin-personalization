@@ -67,3 +67,179 @@ export type ExperimentGeneric<T> = {
     | T
     | undefined
 }
+
+export type GrowthbookExperiment = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  name: string
+  project: string
+  hypothesis: string
+  description: string
+  tags: [string]
+  owner: string
+  archived: boolean
+  status: string
+  autoRefresh: boolean
+  hashAttribute: string
+  fallbackAttribute: string
+  hashVersion: number
+  disableStickyBucketing: boolean
+  bucketVersion: number
+  minBucketVersion: number
+  variations: [
+    {
+      variationId: string
+      key: string
+      name: string
+      description: string
+      screenshots: [string]
+    },
+  ]
+  phases: [
+    {
+      name: string
+      dateStarted: string
+      dateEnded: string
+      reasonForStopping: string
+      seed: string
+      coverage: 0
+      trafficSplit: [
+        {
+          variationId: string
+          weight: 0
+        },
+      ]
+      namespace: {
+        namespaceId: string
+        range: []
+      }
+      targetingCondition: string
+      savedGroupTargeting: [
+        {
+          matchType: string
+          savedGroups: [string]
+        },
+      ]
+    },
+  ]
+  settings: {
+    datasourceId: string
+    assignmentQueryId: string
+    experimentId: string
+    segmentId: string
+    queryFilter: string
+    inProgressConversions: string
+    attributionModel: string
+    statsEngine: string
+    regressionAdjustmentEnabled: boolean
+    goals: [
+      {
+        metricId: string
+        overrides: {
+          delayHours: 0
+          windowHours: 0
+          window: string
+          winRiskThreshold: 0
+          loseRiskThreshold: 0
+        }
+      },
+    ]
+    secondaryMetrics: [
+      {
+        metricId: string
+        overrides: {
+          delayHours: 0
+          windowHours: 0
+          window: string
+          winRiskThreshold: 0
+          loseRiskThreshold: 0
+        }
+      },
+    ]
+    guardrails: [
+      {
+        metricId: string
+        overrides: {
+          delayHours: 0
+          windowHours: 0
+          window: string
+          winRiskThreshold: 0
+          loseRiskThreshold: 0
+        }
+      },
+    ]
+    activationMetric: {
+      metricId: string
+      overrides: {
+        delayHours: 0
+        windowHours: 0
+        window: string
+        winRiskThreshold: 0
+        loseRiskThreshold: 0
+      }
+    }
+  }
+  resultSummary: {
+    status: string
+    winner: string
+    conclusions: string
+    releasedVariationId: string
+    excludeFromPayload: boolean
+  }
+}
+
+export type GrowthbookFeature = {
+  id: string
+  dateCreated: string
+  dateUpdated: string
+  archived: boolean
+  description: string
+  owner: string
+  project: string
+  valueType: string
+  defaultValue: string
+  tags: string[]
+  environments: {
+    [key: string]: {
+      enabled: boolean
+      defaultValue: string
+      rules: {
+        description: string
+        condition: string
+        savedGroupTargeting: {matchType: string; savedGroups: string[]}[]
+        id: string
+        enabled: boolean
+        type: string
+        value: string
+        variations: {value: string; variationId: string}[]
+      }[]
+      definition: string
+      draft: {
+        enabled: boolean
+        defaultValue: string
+        rules: {
+          description: string
+          condition: string
+          savedGroupTargeting: {matchType: string; savedGroups: string[]}[]
+          id: string
+          enabled: boolean
+          type: string
+          value: string
+          variations: {value: string; variationId: string}[]
+        }[]
+        definition: string
+      }
+    }
+  }
+  prerequisites: {
+    parentId: string
+    parentCondition: string
+  }[]
+  revision: {
+    version: number
+    comment: string
+    date: string
+    publishedBy: string
+  }
+}

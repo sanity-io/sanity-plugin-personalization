@@ -47,7 +47,7 @@ const useRemoveExperimentAction = (
     const experiment = [experimentId]
     const variants = [`${variantNameOverride}s`]
     onChange([set(!active, activeId), unset(experiment), unset(variants)])
-  }, [onChange, active, experimentId, experimentNameOverride, variantNameOverride])
+  }, [onChange, active, experimentId, variantNameOverride])
 
   return {
     title: `Remove ${experimentNameOverride}`,
@@ -96,10 +96,7 @@ const createActions = ({
         experimentId,
       }),
   })
-  if (active) {
-    return removeAction
-  }
-  return addAction
+  return active ? removeAction : addAction
 }
 
 export const ExperimentField = (
