@@ -1,6 +1,6 @@
 import {FieldDefinition} from 'sanity'
 
-export type GrowthbookABConfig = {
+export type GrowthbookExperimentFieldPluginConfig = {
   fields: (string | FieldDefinition)[]
   environment: string
   baseUrl?: string

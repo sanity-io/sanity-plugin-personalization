@@ -1,7 +1,7 @@
 import {createContext, useContext, useMemo, useState} from 'react'
 import {ObjectInputProps} from 'sanity'
 
-import {GrowthbookABConfig, GrowthbookContextProps} from '../types'
+import {GrowthbookContextProps, GrowthbookExperimentFieldPluginConfig} from '../types'
 import {Secrets} from './Secrets'
 
 export const GROWTHBOOK_CONFIG_DEFAULT = {
@@ -18,7 +18,7 @@ export function useGrowthbookContext() {
 }
 
 type GrowthbookProps = ObjectInputProps & {
-  growthbookFieldPluginConfig: GrowthbookABConfig
+  growthbookFieldPluginConfig: GrowthbookExperimentFieldPluginConfig
 }
 
 export function GrowthbookProvider(props: GrowthbookProps) {

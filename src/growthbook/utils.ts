@@ -2,7 +2,7 @@ import {SanityClient} from 'sanity'
 
 import {ExperimentType, GrowthbookFeature, VariantType} from '../types'
 import {namespace, pluginConfigKeys} from './Components/Secrets'
-import {GrowthbookABConfig} from './types'
+import {GrowthbookExperimentFieldPluginConfig} from './types'
 
 const getBooleanConversion = (value: string) => {
   // control is false
@@ -21,7 +21,7 @@ export const getExperiments = async ({
   project,
   convertBooleans,
   tags,
-}: Omit<GrowthbookABConfig, 'fields' | 'baseUrl'> & {
+}: Omit<GrowthbookExperimentFieldPluginConfig, 'fields' | 'baseUrl'> & {
   client: SanityClient
   baseUrl: string
 }): Promise<ExperimentType[]> => {

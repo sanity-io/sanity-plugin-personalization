@@ -20,9 +20,7 @@ export type ExperimentType = {
 
 export type FieldPluginConfig = {
   fields: (string | FieldDefinition)[]
-  experiments:
-    | ExperimentType[]
-    | ((client: SanityClient, secret?: string) => Promise<ExperimentType[]>)
+  experiments: ExperimentType[] | ((client: SanityClient) => Promise<ExperimentType[]>)
   apiVersion?: string
   experimentNameOverride?: string
   variantNameOverride?: string
