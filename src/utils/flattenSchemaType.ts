@@ -11,7 +11,7 @@ export function flattenSchemaType(schemaType: SchemaType): ObjectFieldWithPath[]
     return []
   }
 
-  return extractInnerFields(schemaType.fields, [], 3)
+  return extractInnerFields(schemaType.fields, [], 5)
 }
 
 function extractInnerFields(
@@ -28,20 +28,17 @@ function extractInnerFields(
 
     if (field.type.jsonType === 'object') {
       const innerFields = extractInnerFields(field.type.fields, [...path, field.name], maxDepth)
-
       return [...acc, thisFieldWithPath, ...innerFields]
-    } else if (
-      field.type.jsonType === 'array' &&
-      field.type.of.length &&
-      field.type.of.some((item) => 'fields' in item)
-    ) {
-      const innerFields = extractInnerFields(
-        // @ts-expect-error - Fix TS assertion for array fields
-        field.type.of[0].fields,
-        [...path, field.name],
-        maxDepth,
-      )
-
+    } else if (field.type.jsonType === 'array') {
+      // Handle array types by checking each possible type in the array
+      const arrayTypes = field.type.of || []
+      const innerFields = arrayTypes.reduce<ObjectFieldWithPath[]>((arrayAcc, arrayType) => {
+        if ('fields' in arrayType) {
+          const typeFields = extractInnerFields(arrayType.fields, [...path, field.name], maxDepth)
+          return [...arrayAcc, ...typeFields]
+        }
+        return arrayAcc
+      }, [])
       return [...acc, thisFieldWithPath, ...innerFields]
     }
 
