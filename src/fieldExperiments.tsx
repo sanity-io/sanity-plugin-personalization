@@ -219,16 +219,17 @@ export const fieldLevelExperiments = definePlugin<FieldPluginConfig>((config) =>
             return props.renderDefault(props)
           }
 
-          const flatFieldTypeNames = flattenSchemaType(props.schemaType).map(
-            (field) => field.type.name,
-          )
-          const hasExperiment = flatFieldTypeNames.some((name) =>
-            name.startsWith(experimentNameOverride),
+          const flatFields = flattenSchemaType(props.schemaType)
+          const hasExperiment = flatFields.some(
+            (field) =>
+              field.type.name.startsWith(experimentNameOverride) ||
+              field.name.startsWith(experimentNameOverride),
           )
 
           if (!hasExperiment) {
             return props.renderDefault(props)
           }
+
           const providerProps = {
             ...props,
             experimentFieldPluginConfig: {
