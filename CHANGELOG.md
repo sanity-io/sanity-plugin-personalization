@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.3.0...v2.4.0) (2025-05-16)
+
+### Features
+
+- increase flatten depth ([#31](https://github.com/sanity-io/sanity-plugin-personalization/issues/31)) ([0cb34f3](https://github.com/sanity-io/sanity-plugin-personalization/commit/0cb34f30062da6e9f792a39534ff8a5b2e7fb007))
+
 ## [2.3.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.2.1...v2.3.0) (2025-05-06)
 
 ### Features
