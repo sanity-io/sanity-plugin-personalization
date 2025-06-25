@@ -114,9 +114,11 @@ const createExperimentType = ({
       prepare: ({base, experiment}) => {
         const title = base?.title || base?.name || ''
         const experimentTitle = experiment ? `Experiment: ${experiment}` : ''
+        const media = base?.image || base?.photo || base?.media || ''
         return {
           title: title || experimentTitle,
           subtitle: title ? experimentTitle : '',
+          media,
         }
       },
     },
