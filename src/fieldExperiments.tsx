@@ -64,6 +64,7 @@ const createExperimentType = ({
         name: 'active',
         type: 'boolean',
         hidden: true,
+        initialValue: false,
       }),
       defineField({
         name: experimentId,
@@ -105,6 +106,22 @@ const createExperimentType = ({
         ],
       }),
     ],
+    preview: {
+      select: {
+        base: 'default',
+        experiment: experimentId,
+      },
+      prepare: ({base, experiment}) => {
+        const title = base?.title || base?.name || ''
+        const experimentTitle = experiment ? `Experiment: ${experiment}` : ''
+        const media = base?.image || base?.photo || base?.media || ''
+        return {
+          title: title || experimentTitle,
+          subtitle: title ? experimentTitle : '',
+          media,
+        }
+      },
+    },
   })
 }
 
