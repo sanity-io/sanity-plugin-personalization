@@ -20,6 +20,7 @@ Once configured you can query the values using the ids of the experiment and var
   - [Validation of individual array items](#validation-of-individual-array-items)
   - [Shape of stored data](#shape-of-stored-data)
   - [Querying data](#querying-data)
+  - [Using experiment fields in an array](#using-experiment-fields-in-an-array)
   - [License](#license)
   - [Develop \& test](#develop--test)
     - [Release new version](#release-new-version)
@@ -207,6 +208,7 @@ This would also create two new fields in your schema.
 
 Note that the name key in the field gets rewritten to value and is instead used to name the object field.
 
+
 ## Validation of individual array items
 
 You may wish to validate individual fields for various reasons. From the variant array field, add a validation rule that can look through all the array items, and return item-specific validation messages at the path of that array item.
@@ -259,12 +261,47 @@ The custom input contains buttons which will add new array items with the experi
 ```
 
 Querying data
-Using GROQ filters you can query for a specific experitment, with a fallback to default value like so:
+Using GROQ filters you can query for a specific experiment, with a fallback to default value like so:
 
 ```ts
 *[_type == "post"] {
 "title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default),
 }
+```
+
+## Using experiment fields in an array
+
+You may want to add experiment fields as a type with in an array in oder to do this you would need to set an initial value for the experiment to active the schema would be something like:
+```ts
+defineField({
+      name: 'components',
+      type: 'array',
+      of: [
+        defineArrayMember({type: 'cta', name: 'cta'}),
+        defineArrayMember({type: 'experimentCta', name: 'expCta', initialValue: {active: true}}),
+        defineArrayMember({type: 'hero', name: 'hero'}),
+        defineArrayMember({type: 'experimentHero', name: 'expHero', initialValue: {active: true}}),
+      ],
+      group: 'editorial',
+    }),
+```
+
+You can then use a groq filter to return the base version of you array member so you don't have to create an experiment specific version 
+
+```ts
+*[
+  _type == "event" &&
+  slug.current == $slug
+][0]{
+  ...,
+  components[]{
+    _key,
+    ...,
+    string::startsWith(_type, "exp") => {
+      ...coalesce(@.variants[experimentId == $experiment && variantId == $variant][0].value, @.default),
+    },
+  }
+}`);
 ```
 
 ## Overwriting the experiment and variant field names
