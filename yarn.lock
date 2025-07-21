@@ -2822,7 +2822,12 @@
   resolved "https://registry.yarnpkg.com/@sanity/generate-help-url/-/generate-help-url-3.0.0.tgz#60e9cba61b82103ea3761730a53cd9310b98892d"
   integrity sha512-wtMYcV5GIDIhVyF/jjmdwq1GdlK07dRL40XMns73VbrFI7FteRltxv48bhYVZPcLkRXb0SHjpDS/icj9/yzbVA==
 
-"@sanity/icons@^3.7.0", "@sanity/icons@^3.7.4":
+"@sanity/icons@^3.7.0":
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/@sanity/icons/-/icons-3.7.0.tgz#447f80db60e5cae4d90537b1d5ab2197c090d7f1"
+  integrity sha512-MVh5C55X8Vn2oIsraSPVx4MkHvkqUimkmv7yP++IfJBCLgb38/7G2CM+GB95GTpLPRdF2m3QEwwXcaeljjqKOQ==
+
+"@sanity/icons@^3.7.4":
   version "3.7.4"
   resolved "https://registry.yarnpkg.com/@sanity/icons/-/icons-3.7.4.tgz#e992bc250d99b1b50c756a5f4751641021a646c1"
   integrity sha512-O9MnckiDsphFwlRS8Q3kj3n+JYUZ0UzKRujnSikMZOKI0dayucRe4U2XvxikRhJnFhcEJXW2RkWJoBaCoup9Sw==
@@ -3150,7 +3155,7 @@
     conventional-changelog-conventionalcommits "^8.0.0"
     semantic-release-license "^1.0.3"
 
-"@sanity/studio-secrets@^3.0.0":
+"@sanity/studio-secrets@^3.0.1":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@sanity/studio-secrets/-/studio-secrets-3.0.2.tgz#4f8c33988a11f2618aeb48ba6a0c5d8cc6b114ef"
   integrity sha512-rMhi3Y/5ih9zdJBjoZCuqdPR6h/b4EIFFcj078k8s3dcrCPa8PFnFojxE+MWdmdz0azgRkxja9bXOQOGsYzL9A==
