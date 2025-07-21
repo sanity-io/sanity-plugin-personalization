@@ -26,6 +26,15 @@ All notable changes to this project will be documented in this file. See
 ### Features
 
 - use sanity secrets, ability to filter and paginate request to LD ([05b95db](https://github.com/sanity-io/sanity-plugin-personalization/commit/05b95db752a5510ea03344470b3043427b0dc7fc))
+## [2.4.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.0...v2.4.1) (2025-07-10)
+
+### Bug Fixes
+
+- added media to preview ([e1402db](https://github.com/sanity-io/sanity-plugin-personalization/commit/e1402dbd8eb3efb3455557678ca28b962f3efa24))
+- **deps:** allow studio v4 in peer dep ranges ([#34](https://github.com/sanity-io/sanity-plugin-personalization/issues/34)) ([8b8e6a1](https://github.com/sanity-io/sanity-plugin-personalization/commit/8b8e6a1d8de07609aee134a89f40fc8ccf207a16))
+- improved preview in arraays ([d8beda3](https://github.com/sanity-io/sanity-plugin-personalization/commit/d8beda3f9fe84c8d68fa6ed45eea60503ad931e3))
+- improved preview when used in array ([0191341](https://github.com/sanity-io/sanity-plugin-personalization/commit/0191341e7b24a863189fa0330b16871102b72e63))
+
 ## [2.4.0](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.3.0...v2.4.0) (2025-05-16)
 
 ### Features
