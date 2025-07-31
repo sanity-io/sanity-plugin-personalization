@@ -8,6 +8,7 @@ import {
   useClient,
 } from 'sanity'
 
+import {useGrowthbookContext} from '../growthbook/Components/GrowthbookContext'
 import {VariantPreviewProps} from '../types'
 import {useExperimentContext} from './ExperimentContext'
 
@@ -18,20 +19,43 @@ export const VariantPreview = (props: PreviewProps) => {
   const [media, setMedia] = useState<any>(undefined)
   const client = useClient({apiVersion: '2025-01-01'})
   const {experiments} = useExperimentContext()
+  const growthbookContext = useGrowthbookContext()
+  const audiences = growthbookContext?.audiences || []
 
-  const {experiment, variant, value} = props as VariantPreviewProps
+  const {experiment, variant, audience, value} = props as VariantPreviewProps & {audience?: string}
 
-  const selectedExperiment = experiments.find((experimentItem) => {
-    return experimentItem.id === experiment
-  })
+  // Handle experiment variants
+  const selectedExperiment = experiment
+    ? experiments.find((experimentItem) => {
+        return experimentItem.id === experiment
+      })
+    : null
 
   const selectedVariant = selectedExperiment?.variants.find((variantItem) => {
     return variantItem.id === variant
   })
 
+  // Handle audience variants
+  const selectedAudience = audience
+    ? audiences.find((audienceItem) => {
+        return audienceItem.id === audience
+      })
+    : null
+
   useEffect(() => {
     const getSubtitle = async () => {
-      setTitle(`${selectedExperiment?.label} - ${selectedVariant?.label}`)
+      // Set title based on whether this is an experiment or audience variant
+      if (selectedExperiment && selectedVariant) {
+        // Experiment variant
+        setTitle(`${selectedExperiment.label} - ${selectedVariant.label}`)
+      } else if (selectedAudience) {
+        // Audience variant
+        setTitle(`Content for ${selectedAudience.label}`)
+      } else {
+        // Fallback
+        setTitle('Content Variant')
+      }
+
       if (typeof value === 'string') {
         return setSubtitle(value)
       }
@@ -62,7 +86,14 @@ export const VariantPreview = (props: PreviewProps) => {
       return ''
     }
     getSubtitle()
-  }, [value, client, selectedExperiment?.label, selectedVariant?.label, props.schemaType])
+  }, [
+    value,
+    client,
+    selectedExperiment?.label,
+    selectedVariant?.label,
+    selectedAudience?.label,
+    props.schemaType,
+  ])
 
   const previewProps = {
     ...props,

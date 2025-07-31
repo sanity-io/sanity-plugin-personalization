@@ -25,7 +25,7 @@
       "default": "./dist/index.js"
     },
     "./growthbook": {
-      "source": "./src/growthbook/index.ts",
+      "source": "./src/growthbook/index.tsx",
       "import": "./dist/growthbook/index.mjs",
       "default": "./dist/growthbook/index.js"
     },
@@ -49,6 +49,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@sanity/icons": "^3.7.4",
     "@sanity/incompatible-plugin": "^1.0.4",
     "@sanity/studio-secrets": "^3.0.0",
     "@sanity/ui": "^2.8.19",

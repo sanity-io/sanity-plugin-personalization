@@ -2,7 +2,7 @@ import {SanityClient} from 'sanity'
 
 import {ExperimentType, GrowthbookFeature, VariantType} from '../types'
 import {namespace, pluginConfigKeys} from './Components/Secrets'
-import {GrowthbookExperimentFieldPluginConfig} from './types'
+import {AudienceType, GrowthbookExperimentFieldPluginConfig, GrowthbookSavedGroup} from './types'
 
 const getBooleanConversion = (value: string) => {
   // control is false
@@ -91,4 +91,63 @@ export const getExperiments = async ({
   }
   const sortedFeatureExperiments = featureExperiments.sort((a, b) => a.id.localeCompare(b.id))
   return sortedFeatureExperiments
+}
+
+export const getSavedGroups = async ({
+  client,
+  baseUrl,
+  includeArchivedGroups = false,
+}: Omit<GrowthbookExperimentFieldPluginConfig, 'fields' | 'baseUrl' | 'environment'> & {
+  client: SanityClient
+  baseUrl: string
+}): Promise<AudienceType[]> => {
+  const query = `*[_id == 'secrets.${namespace}'][0].secrets.${pluginConfigKeys[0].key}`
+
+  const secret = await client.fetch(query)
+  if (!secret) return []
+
+  let allGroups: GrowthbookSavedGroup[] = []
+  let hasMore = true
+  let offset = 0
+
+  const url = new URL(`${baseUrl}/saved-groups`)
+  // Note: saved-groups endpoint doesn't support projectId filtering
+  // Groups are organization-wide, not project-specific
+  // We do NOT set url.searchParams.set('projectId', project) here
+
+  while (hasMore) {
+    url.searchParams.set('offset', offset.toString())
+    url.searchParams.set('limit', '100')
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${secret}`,
+        },
+      })
+
+      if (!response.ok) {
+        console.error('Failed to fetch saved groups:', response.status, response.statusText)
+        break
+      }
+
+      const data = await response.json()
+      const {savedGroups, hasMore: responseHasMore, nextOffset} = data
+
+      hasMore = responseHasMore || false
+      offset = nextOffset || 0
+      allGroups = [...allGroups, ...(savedGroups || [])]
+    } catch (error) {
+      console.error('Error fetching saved groups:', error)
+      break
+    }
+  }
+
+  return allGroups
+    .filter((group) => includeArchivedGroups || !group.archived)
+    .map((group) => ({
+      id: group.id,
+      label: group.name,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label))
 }

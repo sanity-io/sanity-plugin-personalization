@@ -30,9 +30,12 @@ export type FieldPluginConfig = {
 }
 
 export type VariantPreviewProps = Omit<PreviewProps, 'SchemaType'> & {
-  [key: string]: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any
+  [key: string]: string | unknown
+  value:
+    | string
+    | {_ref: string; _type: string}
+    | {asset: {_ref: string; _type: string}}
+    | Record<string, unknown>
 }
 
 export type ExperimentContextProps = Required<FieldPluginConfig> & {
@@ -43,6 +46,7 @@ export type ArrayInputProps = ArrayOfObjectsInputProps & {
   variantName: string
   variantId: string
   experimentId: string
+  targetingMode?: string
 }
 
 export type ObjectFieldWithPath = ObjectField<SchemaType> & {path: Path}
