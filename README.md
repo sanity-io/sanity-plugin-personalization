@@ -18,6 +18,7 @@ Once configured you can query the values using the ids of the experiment and var
   - [Validation of individual array items](#validation-of-individual-array-items)
   - [Shape of stored data](#shape-of-stored-data)
   - [Querying data](#querying-data)
+  - [Split testing](#split-testing)
   - [Using experiment fields in an array](#using-experiment-fields-in-an-array)
   - [License](#license)
   - [Develop \& test](#develop--test)
@@ -206,7 +207,6 @@ This would also create two new fields in your schema.
 
 Note that the name key in the field gets rewritten to value and is instead used to name the object field.
 
-
 ## Validation of individual array items
 
 You may wish to validate individual fields for various reasons. From the variant array field, add a validation rule that can look through all the array items, and return item-specific validation messages at the path of that array item.
@@ -258,7 +258,8 @@ The custom input contains buttons which will add new array items with the experi
 }
 ```
 
-Querying data
+## Querying data
+
 Using GROQ filters you can query for a specific experiment, with a fallback to default value like so:
 
 ```ts
@@ -267,9 +268,112 @@ Using GROQ filters you can query for a specific experiment, with a fallback to d
 }
 ```
 
+## Split testing
+
+Split testing involves splitting traffic for one url over 2+ pages, this is used when you want to test more than just a single field in an experiment.
+
+### Studio Setup
+
+To do split testing using this plugin define a type that can store a url path
+
+```ts
+export const path = defineType({
+  name: 'path',
+  type: 'string',
+  validation: (Rule) =>
+    Rule.required().custom(async (value: string | undefined, context) => {
+      if (!value) return true
+      if (!value.startsWith('/')) return 'Must start with "/"'
+      return true
+    }),
+})
+```
+
+add the type to the studio `schema.types` and the plugin config fields:
+
+```ts
+ fieldLevelExperiments({
+        fields: ['path', ...otherFields],
+        experiments: getExperiments,
+      }),
+```
+
+and then create a document type that stores the routing information:
+
+```ts
+export const routing = defineType({
+  name: 'routing',
+  type: 'document',
+  title: 'Routing Experiments',
+  fields: [
+    {
+      name: 'pathExperiment',
+      type: 'experimentPath',
+      initialValue: {active: true},
+    },
+  ],
+  preview: {
+    select: {
+      path: 'pathExperiment.default',
+      experiment: 'pathExperiment.experimentId',
+    },
+    prepare({path, experiment}) {
+      return {
+        title: `${path} - ${experiment}`,
+      }
+    },
+  },
+})
+```
+
+### Frontend usage
+
+In your frontend you will need some middleware that can intercept the request for the page and check if the route is included in your split page testing and if so decide which page the user should see.
+
+In Next.js Middleware it could be something like
+
+```ts
+const ROUTING_QUERY = defineQuery(`*[
+  _type == "routing" &&
+  pathExperiment.default == $path
+][0]{
+  "route": coalesce(pathExperiment.variants[experimentId == $experimentId && variantId == $variantId][0].value, pathExperiment.default)
+}`)
+
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next()
+  const path = request.nextUrl.pathname
+  // getExperimentValue is a function that will determine a variant based on some user properties
+  const {variant} = await getExperimentValue(path)
+
+  const queryParams = {
+    path,
+    experimentId: 'homepage',
+    variantId: variant?.id || '',
+  }
+
+  // Instead of doing a query for every page this could be queried at build time and stored in a file.
+  const data = await client.fetch(ROUTING_QUERY, queryParams)
+  if (data?.route) {
+    const url = request.nextUrl.clone()
+    url.pathname = data.route
+    const rewrite = NextResponse.rewrite(url)
+    return rewrite
+  }
+
+  return response
+}
+
+export const config = {
+  //only run the middleware on pages
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'],
+}
+```
+
 ## Using experiment fields in an array
 
 You may want to add experiment fields as a type with in an array in oder to do this you would need to set an initial value for the experiment to active the schema would be something like:
+
 ```ts
 defineField({
       name: 'components',
@@ -284,7 +388,7 @@ defineField({
     }),
 ```
 
-You can then use a groq filter to return the base version of you array member so you don't have to create an experiment specific version 
+You can then use a groq filter to return the base version of you array member so you don't have to create an experiment specific version
 
 ```ts
 *[
