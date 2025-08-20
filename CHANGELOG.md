@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.0-field-level-personalization.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.2...v2.5.0-field-level-personalization.1) (2025-08-20)
+
+### Features
+
+- added export for field level personalisation ([bbb9819](https://github.com/sanity-io/sanity-plugin-personalization/commit/bbb98193c10092441590be4d39508e80c43c5a94))
+
 ## [2.4.2](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.1...v2.4.2) (2025-08-15)
 
 ### Bug Fixes
