@@ -8,30 +8,26 @@ import {
   useClient,
 } from 'sanity'
 
-import {VariantPreviewProps} from '../types'
-import {useExperimentContext} from './ExperimentContext'
+import {VariantPreviewProps} from '../../types'
+import {usePersonalizationContext} from './Context'
 
-export const VariantPreview = (props: PreviewProps) => {
+export const SegmentPreview = (props: PreviewProps) => {
   const [subtitle, setSubtitle] = useState<string | undefined>(undefined)
   const [title, setTitle] = useState<string | undefined>(undefined)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [media, setMedia] = useState<any>(undefined)
   const client = useClient({apiVersion: '2025-01-01'})
-  const {experiments} = useExperimentContext()
+  const {segments} = usePersonalizationContext()
 
-  const {experiment, variant, value} = props as VariantPreviewProps
+  const {segment, value} = props as VariantPreviewProps
 
-  const selectedExperiment = experiments.find((experimentItem) => {
-    return experimentItem.id === experiment
-  })
-
-  const selectedVariant = selectedExperiment?.variants.find((variantItem) => {
-    return variantItem.id === variant
+  const selectedSegment = segments.find((segmentItem) => {
+    return segmentItem.id === segment
   })
 
   useEffect(() => {
     const getSubtitle = async () => {
-      setTitle(`${selectedExperiment?.label} - ${selectedVariant?.label}`)
+      setTitle(`${selectedSegment?.label}`)
       if (typeof value === 'string') {
         return setSubtitle(value)
       }
@@ -62,7 +58,7 @@ export const VariantPreview = (props: PreviewProps) => {
       return ''
     }
     getSubtitle()
-  }, [value, client, selectedExperiment?.label, selectedVariant?.label, props.schemaType])
+  }, [value, client, selectedSegment?.label, props.schemaType])
 
   const previewProps = {
     ...props,
