@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.3](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.2...v2.4.3) (2025-12-18)
+
+### Bug Fixes
+
+- **deps:** make peer dependencies include sanity 5.x ([34b7d99](https://github.com/sanity-io/sanity-plugin-personalization/commit/34b7d998eaf2efd24c1b5b91c5c8117b47f8f3cd))
+
 ## [2.4.2](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.1...v2.4.2) (2025-08-15)
 
 ### Bug Fixes
