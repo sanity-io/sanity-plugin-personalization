@@ -11,6 +11,7 @@ import {ArrayInput} from './components/Array'
 import {CONFIG_DEFAULT, ExperimentProvider} from './components/ExperimentContext'
 import {ExperimentField} from './components/ExperimentField'
 import {ExperimentInput} from './components/ExperimentInput'
+import {ExperimentItem} from './components/ExperimentItem'
 import {VariantInput} from './components/VariantInput'
 import {VariantPreview} from './components/VariantPreview'
 import {FieldPluginConfig} from './types'
@@ -47,6 +48,7 @@ const createExperimentType = ({
           variantNameOverride={variantNameOverride}
         />
       ),
+      item: ExperimentItem,
     },
     fields: [
       typeof field === `string`
@@ -112,7 +114,7 @@ const createExperimentType = ({
         experiment: experimentId,
       },
       prepare: ({base, experiment}) => {
-        const title = base?.title || base?.name || ''
+        const title = base?.title || base?.name || typeof base === 'string' ? base : ''
         const experimentTitle = experiment ? `Experiment: ${experiment}` : ''
         const media = base?.image || base?.photo || base?.media || ''
         return {

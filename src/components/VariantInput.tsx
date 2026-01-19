@@ -2,7 +2,8 @@ import {Button, Inline, Stack} from '@sanity/ui'
 import {ObjectInputProps, set, useFormValue} from 'sanity'
 
 export const VariantInput = (props: ObjectInputProps) => {
-  const defaultValue = useFormValue([props.path[0], 'default'])
+  const experimentPath = props.path.slice(0, -2)
+  const defaultValue = useFormValue([...experimentPath, 'default'])
   const handleClick = () => {
     props.onChange(set(defaultValue, ['value']))
   }
