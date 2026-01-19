@@ -5,39 +5,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [2.5.0-launch-darkly.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.1...v2.5.0-launch-darkly.1) (2025-07-21)
-
-### Features
-
-- movec LaunchDarkly export to own subpath and refactored ([021e96c](https://github.com/sanity-io/sanity-plugin-personalization/commit/021e96c4e5c5bfa7d070880aa84cb88efff565cf))
-- use sanity secrets, ability to filter and paginate request to LD ([05b95db](https://github.com/sanity-io/sanity-plugin-personalization/commit/05b95db752a5510ea03344470b3043427b0dc7fc))
+## [2.4.3](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.2...v2.4.3) (2025-12-18)
 
 ### Bug Fixes
 
-- updated so all values from LD stored as strings ([bbe64aa](https://github.com/sanity-io/sanity-plugin-personalization/commit/bbe64aacc4da7796b82f527efe38dbd63ab53fda))
-- use value for variant label if no label ([6ed4175](https://github.com/sanity-io/sanity-plugin-personalization/commit/6ed417505105a7a5b9049fac273612019dfe123f))
+- **deps:** make peer dependencies include sanity 5.x ([34b7d99](https://github.com/sanity-io/sanity-plugin-personalization/commit/34b7d998eaf2efd24c1b5b91c5c8117b47f8f3cd))
 
-## [2.3.0-launch-darkly.2](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.3.0-launch-darkly.1...v2.3.0-launch-darkly.2) (2025-04-23)
-
-### Features
-
-- movec LaunchDarkly export to own subpath and refactored ([021e96c](https://github.com/sanity-io/sanity-plugin-personalization/commit/021e96c4e5c5bfa7d070880aa84cb88efff565cf))
-
-## [2.3.0-launch-darkly.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.2.0...v2.3.0-launch-darkly.1) (2025-04-02)
-
-### Features
-
-- use sanity secrets, ability to filter and paginate request to LD ([05b95db](https://github.com/sanity-io/sanity-plugin-personalization/commit/05b95db752a5510ea03344470b3043427b0dc7fc))
+## [2.4.2](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.1...v2.4.2) (2025-08-15)
 
 ### Bug Fixes
 
-- use value for variant label if no label ([6ed4175](https://github.com/sanity-io/sanity-plugin-personalization/commit/6ed417505105a7a5b9049fac273612019dfe123f))
+- copy default works in modals ([0be717b](https://github.com/sanity-io/sanity-plugin-personalization/commit/0be717b83c6fc9fd8fb355813f3c8c88fe99955c))
+- when used in modal auto set to active ([a62e6fa](https://github.com/sanity-io/sanity-plugin-personalization/commit/a62e6fae5608ea14ecbfbaae5df2a93f86d09ee7))
 
-## [2.2.0-launch-darkly.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.1.0...v2.2.0-launch-darkly.1) (2025-03-19)
-
-### Features
-
-- use sanity secrets, ability to filter and paginate request to LD ([05b95db](https://github.com/sanity-io/sanity-plugin-personalization/commit/05b95db752a5510ea03344470b3043427b0dc7fc))
 
 ## [2.4.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.0...v2.4.1) (2025-07-10)
 

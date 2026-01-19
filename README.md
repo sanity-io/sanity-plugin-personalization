@@ -25,7 +25,8 @@ Once configured you can query the values using the ids of the experiment and var
     - [Release new version](#release-new-version)
   - [License](#license-1)
 
-For Specific information about the growthbookFieldLevel export see its [readme](/growthbook.md)
+For Specific information about the Growthbook FieldLevel export see its [readme](/growthbook.md)
+For Specific information about the LaunchDarkly FieldLevel export see its [readme](/launchdarkly.md)
 
 ## Installation
 
