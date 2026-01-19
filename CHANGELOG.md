@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file. See
 - copy default works in modals ([0be717b](https://github.com/sanity-io/sanity-plugin-personalization/commit/0be717b83c6fc9fd8fb355813f3c8c88fe99955c))
 - when used in modal auto set to active ([a62e6fa](https://github.com/sanity-io/sanity-plugin-personalization/commit/a62e6fae5608ea14ecbfbaae5df2a93f86d09ee7))
 
+
 ## [2.4.1](https://github.com/sanity-io/sanity-plugin-personalization/compare/v2.4.0...v2.4.1) (2025-07-10)
 
 ### Bug Fixes
