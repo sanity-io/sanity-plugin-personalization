@@ -1,38 +1,81 @@
 # @sanity/personalization-plugin
 
-## Previously know as @sanity/personalisation-plugin
+## Previously known as @sanity/personalisation-plugin
 
-This plugin allows users to add a/b/n testing experiments to individual fields.
+This plugin allows users to add a/b/n testing experiments to individual fields and page-level experiments.
 
 ![image](./overview.gif)
 
-For this plugin you need to defined the experiments you are running and the variations those experiments have. Each experiment needs to have an id, a label, and an array of variants that have an id and a label. You can either pass an array of experiments in the plugin config, or you can use and async function to retrieve the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset.
+For this plugin you need to define the experiments you are running and the variations those experiments have. Each experiment needs to have an id, a label, and an array of variants that have an id and a label. You can either pass an array of experiments in the plugin config, or you can use and async function to retrieve the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset.
 
 Once configured you can query the values using the ids of the experiment and variant
 
-- [@sanity/personalization-plugin](#@sanity/personalization-plugin)
+- [@sanity/personalization-plugin](#sanitypersonalization-plugin)
+  - [Previously known as @sanity/personalisation-plugin](#previously-known-as-sanitypersonalisation-plugin)
   - [Installation](#installation)
+  - [When to Use This Plugin](#when-to-use-this-plugin)
   - [Usage](#usage)
   - [Loading Experiments](#loading-experiments)
+    - [Option 1: Static Array](#option-1-static-array)
+    - [Option 2: Fetch from External Service](#option-2-fetch-from-external-service)
+    - [Option 3: Store in Sanity Dataset](#option-3-store-in-sanity-dataset)
   - [Using complex field configurations](#using-complex-field-configurations)
+  - [Page-Level Experiments](#page-level-experiments)
+    - [Step 1: Configure the Plugin with a Reference Field](#step-1-configure-the-plugin-with-a-reference-field)
+    - [Step 2: Create a Route Experiment Document Type](#step-2-create-a-route-experiment-document-type)
+    - [Step 3: Query the Correct Page](#step-3-query-the-correct-page)
+    - [Step 4: Implement Proxy for Routing](#step-4-implement-proxy-for-routing)
   - [Validation of individual array items](#validation-of-individual-array-items)
   - [Shape of stored data](#shape-of-stored-data)
   - [Querying data](#querying-data)
-  - [Split testing](#split-testing)
+  - [Variant Assignment](#variant-assignment)
+    - [Variant ID Consistency](#variant-id-consistency)
+    - [Cookie-Based Assignment](#cookie-based-assignment)
+    - [Reading Variants in Page Components](#reading-variants-in-page-components)
+    - [Third-Party Integration](#third-party-integration)
+  - [Split testing (URL-based)](#split-testing-url-based)
+    - [Studio Setup](#studio-setup)
+    - [Frontend usage](#frontend-usage)
   - [Using experiment fields in an array](#using-experiment-fields-in-an-array)
+  - [Overwriting the experiment and variant field names](#overwriting-the-experiment-and-variant-field-names)
+    - [Example: Audience Segmentation](#example-audience-segmentation)
+    - [Stored Data Structure](#stored-data-structure)
+    - [Querying with Custom Field Names](#querying-with-custom-field-names)
   - [License](#license)
   - [Develop \& test](#develop--test)
     - [Release new version](#release-new-version)
-  - [License](#license-1)
 
 For Specific information about the Growthbook FieldLevel export see its [readme](/growthbook.md)
 For Specific information about the LaunchDarkly FieldLevel export see its [readme](/launchdarkly.md)
+
+🚀 For a full working example of this plugin implemented with Next.js, see the [personalization-plugin-example](https://github.com/demo-repositories/personalization-plugin-example) repository.
+
+🎬 Watch the [video walkthrough](https://www.loom.com/share/3e1314575b23434eb0aa35ccad9b9592) to see how the plugin works in a Next.js project.
 
 ## Installation
 
 ```sh
 npm install @sanity/personalization-plugin
 ```
+
+## When to Use This Plugin
+
+This plugin supports two types of A/B testing:
+
+| Type | Use Case | Example |
+|------|----------|---------|
+| **Field-Level** | Test different content values on the same page | Different headlines, CTAs, or descriptions |
+| **Page-Level** | Test entirely different page layouts | Different homepage designs or landing pages |
+
+**Choose Field-Level when:**
+- You want to test a single element (headline, button text, image)
+- The page structure stays the same
+- You need fine-grained control over individual content pieces
+
+**Choose Page-Level when:**
+- You want to test completely different page designs
+- Multiple elements change together as part of a cohesive variant
+- You're running landing page optimization tests
 
 ## Usage
 
@@ -42,31 +85,38 @@ Add it as a plugin in `sanity.config.ts` (or .js):
 import {defineConfig} from 'sanity'
 import {fieldLevelExperiments} from '@sanity/personalization-plugin'
 
-const experiment1 = {
-  id: '123',
-  label: 'experiment 1',
+// Example: Testing different homepage headlines
+const headlineExperiment = {
+  id: 'homepage-headline',
+  label: 'Homepage Headline Test',
   variants: [
     {
-      id: '123-a',
-      label: 'first var',
+      id: 'control',
+      label: 'Control',
     },
     {
-      id: '123-b',
-      label: 'second var',
+      id: 'emotional',
+      label: 'Emotional Appeal',
     },
   ],
 }
-const experiment2 = {
-  id: '456',
-  label: 'experiment 2',
+
+// Example: Testing different signup button text
+const ctaExperiment = {
+  id: 'signup-cta',
+  label: 'Signup CTA Test',
   variants: [
     {
-      id: '456-a',
-      label: 'b first var',
+      id: 'control',
+      label: 'Control',
     },
     {
-      id: '456-b',
-      label: 'b second var',
+      id: 'urgent',
+      label: 'Urgency Messaging',
+    },
+    {
+      id: 'benefit',
+      label: 'Benefit Focused',
     },
   ],
 }
@@ -77,22 +127,22 @@ export default defineConfig({
     //...
     fieldLevelExperiments({
       fields: ['string'],
-
-      experiments: [experiment1, experiment2],
+      experiments: [headlineExperiment, ctaExperiment],
     }),
   ],
 })
 ```
 
-This will register two new fields to the schema., based on the setting passed intto `fields:`
+This will register two new fields to the schema based on the setting passed into `fields:`:
 
-- `experimentString` an Object field with `string` field called `default`, a `string` field called `experimentId` and an array field called `variants` of type:
-- `variantString` an object field with a `string` field called `value`, a string field called `variantId`, a `string` field called `experimentId`.
+- `experimentString` - An object field with a `string` field called `default`, a `string` field called `experimentId`, and an array field called `variants`
+- `variantString` - An object field with a `string` field called `value`, a string field called `variantId`, and a `string` field called `experimentId`
 
 Use the experiment field in your schema like this:
 
 ```ts
-//for Example in post.ts
+// Example: blog post with A/B testable title
+// In post.ts
 
 fields: [
   defineField({
@@ -102,84 +152,93 @@ fields: [
 ]
 ```
 
+When editors open a document with this field, they can:
+1. Enter a **default value** (shown to users not in an experiment)
+2. Click the <img src="./beaker.svg" alt="beaker icon" width="28"> **beaker icon** ("Add experiment") to assign an experiment
+3. Enter **variant-specific values** for each variant in the experiment
+
+![Field-level experiment — click the beaker icon to add an experiment](./field-experiment.png)
+
+> 💡 **Tip:** Look for the <img src="./beaker.svg" alt="beaker icon" width="28"> beaker icon in the field toolbar — clicking it opens the experiment picker where you can assign an experiment and enter variant-specific values.
+
 ## Loading Experiments
 
-Experiments must be an array of objects with an id and label and an array of variants objects with an id and label.
+Experiments must be an array of objects with an `id`, `label`, and an array of `variants` (each with `id` and `label`).
+
+**Important:** The variant `id` values must match what your frontend uses to assign users to variants (typically via cookies).
+
+### Option 1: Static Array
+
+Define experiments directly in your config:
 
 ```ts
 experiments: [
   {
-    id: '123',
-    label: 'experiment 1',
+    id: 'homepage-headline',
+    label: 'Homepage Headline Test',
     variants: [
-      {
-        id: '123-a',
-        label: 'first var',
-      },
-      {
-        id: '123-b',
-        label: 'second var',
-      },
+      { id: 'control', label: 'Control' },
+      { id: 'emotional', label: 'Emotional Appeal' },
     ],
   },
   {
-    id: '456',
-    label: 'experiment 2',
+    id: 'signup-cta',
+    label: 'Signup CTA Test',
     variants: [
-      {
-        id: '456-a',
-        label: 'b first var',
-      },
-      {
-        id: '456-b',
-        label: 'b second var',
-      },
+      { id: 'control', label: 'Control' },
+      { id: 'urgent', label: 'Urgency Messaging' },
+      { id: 'benefit', label: 'Benefit Focused' },
     ],
   },
 ]
 ```
 
-Or an asynchronous function that returns an array of objects with an id and label and an array of variants objects with an id and label.
+### Option 2: Fetch from External Service
+
+Use an async function to load experiments from services like GrowthBook, Amplitude, or LaunchDarkly:
 
 ```ts
 experiments: async () => {
-  const response = await fetch('https://example.com/experiments')
-  const {externalExperiments} = await response.json()
+  const response = await fetch('https://api.growthbook.io/experiments')
+  const {experiments: externalExperiments} = await response.json()
 
-  const experiments: ExperimentType[] = externalExperiments?.map((experiment) => {
-    const experimentId = experiment.id
-    const experimentLabel = experiment.name
-    const variants = experiment.variations?.map((variant) => {
-      return {
-        id: variant.variationId,
-        label: variant.name,
-      }
-    })
-    return {
-      id: experimentId,
-      label: experimentLabel,
-      variants,
+  return externalExperiments?.map((experiment) => ({
+    id: experiment.id,
+    label: experiment.name,
+    variants: experiment.variations?.map((variant) => ({
+      id: variant.variationId,
+      label: variant.name,
+    })),
+  }))
+}
+```
+
+### Option 3: Store in Sanity Dataset
+
+The async function receives a configured Sanity Client, allowing you to store experiments as documents:
+
+```ts
+experiments: async (client) => {
+  // Fetch experiment documents from your dataset
+  const experiments = await client.fetch(`
+    *[_type == 'experiment']{
+      id,
+      label,
+      variants[]{id, label}
     }
-  })
+  `)
   return experiments
 }
 ```
 
-The async function contains a configured Sanity Client in the first parameter, allowing you to store Language options as documents. Your query should return an array of objects with an id and title.
-
-```ts
-experiments: async (client) => {
-    const experiments = await client.fetch(`*[_type == 'experiment']`)
-    return experiments
-  },
-```
+This approach lets content editors create and manage experiments directly in Sanity Studio without code changes.
 
 ## Using complex field configurations
 
 For more control over the value field, you can pass a schema definition into the fields array.
 
 ```ts
-import {defineConfig} from 'sanity'
+import {defineConfig, defineField} from 'sanity'
 import {fieldLevelExperiments} from '@sanity/personalization-plugin'
 
 export default defineConfig({
@@ -195,18 +254,154 @@ export default defineConfig({
           hidden: ({document}) => !document?.title,
         }),
       ],
-      experiments: [experiment1, experiment2],
+      experiments: [headlineExperiment, ctaExperiment],
     }),
   ],
 })
 ```
 
-This would also create two new fields in your schema.
+This would also create two new fields in your schema:
 
-- `experimentFeaturedProduct` an Object field with `reference` field called `default`, a `string` field called `experimentId` and an array field called `variants` of type:
-- `variantFeaturedProduct` an object field with a `reference` field called `value`, a string field called `variandId`, a `string` field called `experimentId`.
+- `experimentFeaturedProduct` - An object field with a `reference` field called `default`, a `string` field called `experimentId`, and an array field called `variants`
+- `variantFeaturedProduct` - An object field with a `reference` field called `value`, a string field called `variantId`, and a `string` field called `experimentId`
 
-Note that the name key in the field gets rewritten to value and is instead used to name the object field.
+Note that the `name` key in the field definition is used to name the generated field type, while the actual field inside is always called `value`.
+
+## Page-Level Experiments
+
+You can use this plugin to A/B test entire pages by experimenting on reference fields. This is useful when you want to show completely different page content to different user segments.
+
+![Page-level experiment — click the beaker icon to add an experiment](./page-experiment.png)
+
+> 💡 **Tip:** Just like field-level experiments, click the <img src="./beaker.svg" alt="beaker icon" width="28"> beaker icon on the reference field to assign an experiment and configure variant-specific pages.
+
+### Step 1: Configure the Plugin with a Reference Field
+
+```ts
+import {defineConfig, defineField} from 'sanity'
+import {fieldLevelExperiments} from '@sanity/personalization-plugin'
+
+const homepageExperiment = {
+  id: 'homepage-redesign',
+  label: 'Homepage Redesign Test',
+  variants: [
+    { id: 'control', label: 'Control (Current Design)' },
+    { id: 'variant-a', label: 'Variant A (New Design)' },
+  ],
+}
+
+export default defineConfig({
+  //...
+  plugins: [
+    fieldLevelExperiments({
+      fields: [
+        'string',
+        // Add a reference field for page-level experiments
+        defineField({
+          name: 'page',
+          type: 'reference',
+          to: [{type: 'page'}, {type: 'homePage'}],
+        }),
+      ],
+      experiments: [homepageExperiment],
+    }),
+  ],
+})
+```
+
+### Step 2: Create a Route Experiment Document Type
+
+Create a document type to store which pages should be shown for each route:
+
+```ts
+import {defineType, defineField} from 'sanity'
+
+export const routeExperiment = defineType({
+  name: 'routeExperiment',
+  title: 'Route Experiment',
+  type: 'document',
+  fields: [
+    defineField({
+      name: 'name',
+      title: 'Experiment Name',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'targetRoute',
+      title: 'Target Route',
+      type: 'string',
+      description: 'The URL path this experiment applies to (e.g., "/" for homepage)',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'isActive',
+      title: 'Active',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'page',
+      title: 'Page',
+      type: 'experimentPage', // Auto-generated by the plugin
+      description: 'Select default page and variant pages',
+    }),
+  ],
+})
+```
+
+### Step 3: Query the Correct Page
+
+Use GROQ to resolve the correct page based on experiment and variant:
+
+```ts
+const ROUTE_EXPERIMENT_QUERY = `
+  *[_type == "routeExperiment" && targetRoute == $path && isActive == true][0]{
+    "page": coalesce(
+      page.variants[experimentId == $experimentId && variantId == $variantId][0].value,
+      page.default
+    )->{
+      _id,
+      _type,
+      title,
+      // ... other page fields
+    }
+  }
+`
+```
+
+### Step 4: Implement Proxy for Routing
+
+In your frontend (e.g., Next.js proxy), determine which page to serve:
+
+```ts
+// proxy.ts
+import {NextResponse} from 'next/server'
+import type {NextRequest} from 'next/server'
+
+export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  
+  // Get user's assigned variant from cookie
+  const variantId = request.cookies.get('ab-variant')?.value || 'control'
+  
+  // Fetch the experiment configuration
+  const data = await client.fetch(ROUTE_EXPERIMENT_QUERY, {
+    path: pathname,
+    experimentId: 'homepage-redesign',
+    variantId: variantId,
+  })
+  
+  if (data?.page) {
+    // Rewrite to the selected page
+    const url = request.nextUrl.clone()
+    url.searchParams.set('pageId', data.page._id)
+    return NextResponse.rewrite(url)
+  }
+  
+  return NextResponse.next()
+}
+```
 
 ## Validation of individual array items
 
@@ -238,51 +433,150 @@ defineField({
 
 ## Shape of stored data
 
-The custom input contains buttons which will add new array items with the experiment and variant already populated. Data returned from this array will look like this:
+The custom input contains buttons which will add new array items with the experiment and variant already populated. Data returned from this field will look like this:
 
 ```json
 "title": {
-  "default": "asdf",
-  "experimentId": "test-1",
+  "default": "Welcome to Our Platform",
+  "experimentId": "homepage-headline",
   "variants": [
     {
-      "experimentId": "test-1",
-      "value": "asdf",
-      "variantId": "test-1-a"
+      "experimentId": "homepage-headline",
+      "variantId": "control",
+      "value": "Welcome to Our Platform"
     },
     {
-      "experimentId": "test-1",
-      "variantId": "test-1-b",
-      "value": "asdf"
+      "experimentId": "homepage-headline",
+      "variantId": "emotional",
+      "value": "Transform Your Life Today"
     }
   ]
 }
 ```
 
+In this example:
+- `default` is shown to users not in an experiment
+- `control` variant shows "Welcome to Our Platform"
+- `emotional` variant shows "Transform Your Life Today"
+
 ## Querying data
 
-Using GROQ filters you can query for a specific experiment, with a fallback to default value like so:
+Use GROQ's `coalesce` function to query for a specific variant with a fallback to the default value:
 
 ```ts
+// Fetch blog posts with experiment-aware title
 *[_type == "post"] {
-"title":coalesce(title.variants[experimentId == $experiment && variantId == $variant][0].value, title.default),
+  "title": coalesce(
+    title.variants[experimentId == $experimentId && variantId == $variantId][0].value,
+    title.default
+  ),
+  // ... other fields
 }
 ```
 
-## Split testing
+On your frontend, pass the experiment and variant IDs as query parameters:
 
-Split testing involves splitting traffic for one url over 2+ pages, this is used when you want to test more than just a single field in an experiment.
+```ts
+const posts = await client.fetch(query, {
+  experimentId: 'homepage-headline',
+  variantId: userVariant, // e.g., 'control' or 'emotional'
+})
+```
+
+This pattern ensures:
+1. Users in the experiment see their assigned variant's content
+2. Users not in an experiment see the default value
+3. The query works even if no variants are defined (falls back to default)
+
+## Variant Assignment
+
+For experiments to work, your frontend must assign users to variants and pass the correct variant ID when querying content.
+
+### Variant ID Consistency
+
+**Important:** The variant IDs in your plugin configuration must match exactly what your frontend uses.
+
+```ts
+// Studio config - these IDs must match your frontend
+const experiment = {
+  id: 'homepage-headline',
+  variants: [
+    { id: 'control', label: 'Control' },      // ID: 'control'
+    { id: 'variant-a', label: 'Variant A' },  // ID: 'variant-a'
+  ],
+}
+```
+
+### Cookie-Based Assignment
+
+The most common approach is to assign variants via cookies on first visit:
+
+```ts
+// In Next.js proxy (proxy.ts)
+export function proxy(request: NextRequest) {
+  const response = NextResponse.next()
+  
+  // Check if user already has a variant
+  let variant = request.cookies.get('ab-variant')?.value
+  
+  // Assign new users randomly
+  if (!variant) {
+    variant = Math.random() > 0.5 ? 'control' : 'variant-a'
+    response.cookies.set('ab-variant', variant, {
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/',
+    })
+  }
+  
+  return response
+}
+```
+
+### Reading Variants in Page Components
+
+In your page components, read the variant from cookies:
+
+```ts
+import { cookies } from 'next/headers'
+
+async function getVariant(): Promise<string> {
+  const cookieStore = await cookies()
+  const abCookie = cookieStore.get('ab-variant')?.value
+  return abCookie || 'control'
+}
+
+export default async function Page() {
+  const variant = await getVariant()
+  
+  const data = await client.fetch(query, {
+    experimentId: 'homepage-headline',
+    variantId: variant,
+  })
+  
+  // Render with experiment-aware content
+}
+```
+
+### Third-Party Integration
+
+For advanced use cases, you can integrate with experimentation platforms like GrowthBook, LaunchDarkly, or Amplitude. These platforms handle variant assignment and provide analytics. See the [GrowthBook](/growthbook.md) and [LaunchDarkly](/launchdarkly.md) integration guides for details.
+
+## Split testing (URL-based)
+
+Split testing involves routing users at one URL to different pages. Use this when you want to test completely different page layouts, not just individual fields.
 
 ### Studio Setup
 
-To do split testing using this plugin define a type that can store a url path
+First, define a custom path type for URL validation:
 
 ```ts
+import {defineType} from 'sanity'
+
 export const path = defineType({
   name: 'path',
   type: 'string',
   validation: (Rule) =>
-    Rule.required().custom(async (value: string | undefined, context) => {
+    Rule.required().custom(async (value: string | undefined) => {
       if (!value) return true
       if (!value.startsWith('/')) return 'Must start with "/"'
       return true
@@ -290,28 +584,41 @@ export const path = defineType({
 })
 ```
 
-add the type to the studio `schema.types` and the plugin config fields:
+Add the path type to your schema and plugin config:
 
 ```ts
- fieldLevelExperiments({
-        fields: ['path', ...otherFields],
-        experiments: getExperiments,
-      }),
+fieldLevelExperiments({
+  fields: ['path', 'string'], // Include 'path' for URL experiments
+  experiments: [
+    {
+      id: 'landing-page-test',
+      label: 'Landing Page A/B Test',
+      variants: [
+        { id: 'control', label: 'Control' },
+        { id: 'variant-a', label: 'Variant A' },
+      ],
+    },
+  ],
+}),
 ```
 
-and then create a document type that stores the routing information:
+Create a document type to store routing experiments:
 
 ```ts
+import {defineType, defineField} from 'sanity'
+
 export const routing = defineType({
   name: 'routing',
   type: 'document',
-  title: 'Routing Experiments',
+  title: 'URL Split Tests',
   fields: [
-    {
+    defineField({
       name: 'pathExperiment',
+      title: 'URL Path Experiment',
       type: 'experimentPath',
       initialValue: {active: true},
-    },
+      description: 'Set the default URL and variant URLs for this test',
+    }),
   ],
   preview: {
     select: {
@@ -320,7 +627,8 @@ export const routing = defineType({
     },
     prepare({path, experiment}) {
       return {
-        title: `${path} - ${experiment}`,
+        title: `${path}`,
+        subtitle: `Experiment: ${experiment || 'None'}`,
       }
     },
   },
@@ -329,36 +637,51 @@ export const routing = defineType({
 
 ### Frontend usage
 
-In your frontend you will need some middleware that can intercept the request for the page and check if the route is included in your split page testing and if so decide which page the user should see.
-
-In Next.js Middleware it could be something like
+Use a proxy to intercept requests and route users to the appropriate page based on their variant assignment:
 
 ```ts
-const ROUTING_QUERY = defineQuery(`*[
+// proxy.ts
+import {NextResponse} from 'next/server'
+import type {NextRequest} from 'next/server'
+import {client} from './lib/sanity'
+
+const ROUTING_QUERY = `*[
   _type == "routing" &&
   pathExperiment.default == $path
 ][0]{
-  "route": coalesce(pathExperiment.variants[experimentId == $experimentId && variantId == $variantId][0].value, pathExperiment.default)
-}`)
+  "route": coalesce(
+    pathExperiment.variants[experimentId == $experimentId && variantId == $variantId][0].value,
+    pathExperiment.default
+  )
+}`
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next()
-  const path = request.nextUrl.pathname
-  // getExperimentValue is a function that will determine a variant based on some user properties
-  const {variant} = await getExperimentValue(path)
-
-  const queryParams = {
-    path,
-    experimentId: 'homepage',
-    variantId: variant?.id || '',
+export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  
+  // Get user's variant from cookie (set on first visit)
+  let variantId = request.cookies.get('ab-variant')?.value
+  
+  // Assign new users to a variant randomly
+  if (!variantId) {
+    variantId = Math.random() > 0.5 ? 'control' : 'variant-a'
   }
+  
+  const response = NextResponse.next()
+  response.cookies.set('ab-variant', variantId, { maxAge: 60 * 60 * 24 * 30 }) // 30 days
 
-  // Instead of doing a query for every page this could be queried at build time and stored in a file.
-  const data = await client.fetch(ROUTING_QUERY, queryParams)
-  if (data?.route) {
+  // Query for URL routing experiments
+  const data = await client.fetch(ROUTING_QUERY, {
+    path: pathname,
+    experimentId: 'landing-page-test',
+    variantId: variantId,
+  })
+  
+  if (data?.route && data.route !== pathname) {
     const url = request.nextUrl.clone()
     url.pathname = data.route
     const rewrite = NextResponse.rewrite(url)
+    // Preserve the cookie on the rewrite response
+    rewrite.cookies.set('ab-variant', variantId, { maxAge: 60 * 60 * 24 * 30 })
     return rewrite
   }
 
@@ -366,10 +689,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  //only run the middleware on pages
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'],
 }
 ```
+
+**Tip:** For better performance, consider querying all routing experiments at build time and caching them, rather than fetching on every request.
 
 ## Using experiment fields in an array
 
@@ -409,19 +733,46 @@ You can then use a groq filter to return the base version of you array member so
 
 ## Overwriting the experiment and variant field names
 
-If your use case does not match exactly with experiments you can overwrite the name field names for experiment and variant in the config.
+If your use case doesn't match the "experiment/variant" terminology, you can rename these fields. This is useful for:
+
+- **Audience-based personalization**: Show different content to different user segments (e.g., "enterprise customers" vs "small business")
+- **Locale-based content**: Display region-specific messaging
+- **Feature flags**: Toggle content based on feature availability
+
+### Example: Audience Segmentation
 
 ```ts
 import {defineConfig} from 'sanity'
 import {fieldLevelExperiments} from '@sanity/personalization-plugin'
 
+// Define your audiences and segments
+const audiences = [
+  {
+    id: 'customer-type',
+    label: 'Customer Type',
+    variants: [
+      { id: 'enterprise', label: 'Enterprise' },
+      { id: 'small-business', label: 'Small Business' },
+      { id: 'individual', label: 'Individual' },
+    ],
+  },
+  {
+    id: 'subscription-tier',
+    label: 'Subscription Tier',
+    variants: [
+      { id: 'free', label: 'Free Tier' },
+      { id: 'pro', label: 'Pro Tier' },
+      { id: 'enterprise', label: 'Enterprise Tier' },
+    ],
+  },
+]
+
 export default defineConfig({
   //...
   plugins: [
-    //...
     fieldLevelExperiments({
       fields: ['string'],
-      experiments: [experiment1, experiment2],
+      experiments: audiences,
       experimentNameOverride: 'audience',
       variantNameOverride: 'segment',
     }),
@@ -429,38 +780,59 @@ export default defineConfig({
 })
 ```
 
-This would also create two new fields in your schema.
+This creates two new fields in your schema:
 
-- `audienceString` an Object field with `string` field called `default`, a `string` field called `audienceId` and an array field called `segments` of type:
-- `segmentString` an object field with a `string` field called `value`, a string field called `segmentId`, a `string` field called `audienceId`.
+- `audienceString` - An object field with a `string` field called `default`, a `string` field called `audienceId`, and an array field called `segments`
+- `segmentString` - An object field with a `string` field called `value`, a string field called `segmentId`, and a `string` field called `audienceId`
 
-the data will be stored as
+### Stored Data Structure
+
+The data will be stored with your custom field names:
 
 ```json
-"title": {
-  "default": "asdf",
-  "audienceId": "test-1",
+"headline": {
+  "default": "Welcome to Our Platform",
+  "audienceId": "customer-type",
   "segments": [
     {
-      "audienceId": "test-1",
-      "value": "asdf",
-      "segmentId": "test-1-a"
+      "audienceId": "customer-type",
+      "segmentId": "enterprise",
+      "value": "Enterprise-Grade Solutions for Your Team"
     },
     {
-      "audienceId": "test-1",
-      "segmentId": "test-1-b",
-      "value": "qwer"
+      "audienceId": "customer-type",
+      "segmentId": "small-business",
+      "value": "Grow Your Business with Powerful Tools"
+    },
+    {
+      "audienceId": "customer-type",
+      "segmentId": "individual",
+      "value": "Your Personal Productivity Hub"
     }
   ]
 }
 ```
 
-This will also affect the query you write to fetch data to be:
+### Querying with Custom Field Names
+
+Update your GROQ queries to use the renamed fields:
 
 ```ts
-*[_type == "post"] {
-"title":coalesce(title.segments[audienceId == $audience && segmentId == $segment][0].value, title.default),
+*[_type == "landingPage"] {
+  "headline": coalesce(
+    headline.segments[audienceId == $audience && segmentId == $segment][0].value,
+    headline.default
+  ),
 }
+```
+
+On your frontend, pass the audience and segment:
+
+```ts
+const page = await client.fetch(query, {
+  audience: 'customer-type',
+  segment: userSegment, // e.g., 'enterprise', 'small-business', or 'individual'
+})
 ```
 
 ## License
