@@ -4,6 +4,13 @@
 
 This plugin allows users to add a/b/n testing experiments to individual fields and page-level experiments.
 
+> **Full Demo**
+>
+> 🚀 For a full working example of this plugin implemented with Next.js, see the [personalization-plugin-example](https://github.com/demo-repositories/personalization-plugin-example) repository.
+>
+> 🎬 Watch the [video walkthrough](https://www.loom.com/share/3e1314575b23434eb0aa35ccad9b9592) to see how the plugin works in a Next.js project.
+
+
 ![image](./overview.gif)
 
 For this plugin you need to define the experiments you are running and the variations those experiments have. Each experiment needs to have an id, a label, and an array of variants that have an id and a label. You can either pass an array of experiments in the plugin config, or you can use and async function to retrieve the experiments and variants from an external service like growthbook, Amplitude, LaunchDarkly... You could even store the experiments in your sanity dataset.
@@ -45,12 +52,9 @@ Once configured you can query the values using the ids of the experiment and var
   - [Develop \& test](#develop--test)
     - [Release new version](#release-new-version)
 
-For Specific information about the Growthbook FieldLevel export see its [readme](/growthbook.md)
-For Specific information about the LaunchDarkly FieldLevel export see its [readme](/launchdarkly.md)
-
-🚀 For a full working example of this plugin implemented with Next.js, see the [personalization-plugin-example](https://github.com/demo-repositories/personalization-plugin-example) repository.
-
-🎬 Watch the [video walkthrough](https://www.loom.com/share/3e1314575b23434eb0aa35ccad9b9592) to see how the plugin works in a Next.js project.
+> For Specific information about the Growthbook FieldLevel export see its [readme](/growthbook.md)
+>
+> For Specific information about the LaunchDarkly FieldLevel export see its [readme](/launchdarkly.md)
 
 ## Installation
 
@@ -364,15 +368,20 @@ const ROUTE_EXPERIMENT_QUERY = `
       _id,
       _type,
       title,
+      slug,
       // ... other page fields
     }
   }
 `
 ```
 
+> The `slug` field is required for the slug-based path rewrite (Option B in Step 4).
+
 ### Step 4: Implement Proxy for Routing
 
-In your frontend (e.g., Next.js proxy), determine which page to serve:
+In your frontend (e.g., Next.js proxy), determine which page to serve. Two approaches are supported:
+
+**Option A: Same URL (pageId query param)** — Keeps the visible URL stable. Best for A/B tests where users always see the same path.
 
 ```ts
 // proxy.ts
@@ -393,7 +402,7 @@ export async function proxy(request: NextRequest) {
   })
   
   if (data?.page) {
-    // Rewrite to the selected page
+    // Rewrite to the selected page (same URL, pass pageId)
     const url = request.nextUrl.clone()
     url.searchParams.set('pageId', data.page._id)
     return NextResponse.rewrite(url)
@@ -401,6 +410,18 @@ export async function proxy(request: NextRequest) {
   
   return NextResponse.next()
 }
+```
+
+**Option B: Slug-based path rewrite** — Rewrites the URL to the variant page's slug. Use when your app routes by slug (e.g. `app/[[...slug]]/page.tsx`) and you want the URL to reflect the variant.
+
+```ts
+  if (data?.page?.slug?.current) {
+    // Rewrite to the variant's slug path
+    const url = request.nextUrl.clone()
+    url.pathname = `/${data.page.slug.current}`
+    return NextResponse.rewrite(url)
+  }
+  // If slug is missing, the request continues without rewriting
 ```
 
 ## Validation of individual array items
@@ -509,28 +530,45 @@ const experiment = {
 
 ### Cookie-Based Assignment
 
-The most common approach is to assign variants via cookies on first visit:
+The most common approach is to assign variants via cookies on first visit. Using MurmurHash with a userId gives better distribution and deterministic assignment (the same user always gets the same variant):
 
 ```ts
 // In Next.js proxy (proxy.ts)
+import {NextResponse} from 'next/server'
+import type {NextRequest} from 'next/server'
+import {v4} from 'uuid'
+import MurmurHash3 from 'imurmurhash'
+
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
+
 export function proxy(request: NextRequest) {
   const response = NextResponse.next()
   
   // Check if user already has a variant
   let variant = request.cookies.get('ab-variant')?.value
   
-  // Assign new users randomly
   if (!variant) {
-    variant = Math.random() > 0.5 ? 'control' : 'variant-a'
-    response.cookies.set('ab-variant', variant, {
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: '/',
-    })
+    // Use logged-in user ID if available, else persisted or new anonymous ID
+    const userId =
+      getUserIdFromSession(request) ?? // Implement: return session?.user?.id etc.
+      request.cookies.get('ab-user-id')?.value ??
+      v4()
+
+    // Deterministic variant from hash (same userId → same variant)
+    variant = MurmurHash3(userId).result() % 2 ? 'control' : 'variant-a'
+
+    response.cookies.set('ab-variant', variant, { maxAge: COOKIE_MAX_AGE, path: '/' })
+    // Persist anonymous ID when we created a new one (stable until user logs in)
+    if (!getUserIdFromSession(request) && !request.cookies.get('ab-user-id')?.value) {
+      response.cookies.set('ab-user-id', userId, { maxAge: COOKIE_MAX_AGE, path: '/' })
+    }
   }
   
   return response
 }
 ```
+
+> **Tip:** Install with `npm install uuid imurmurhash`. When a user logs in, update the `ab-user-id` cookie to their real user ID so variant assignment stays consistent across sessions.
 
 ### Reading Variants in Page Components
 
@@ -643,6 +681,8 @@ Use a proxy to intercept requests and route users to the appropriate page based 
 // proxy.ts
 import {NextResponse} from 'next/server'
 import type {NextRequest} from 'next/server'
+import {v4} from 'uuid'
+import MurmurHash3 from 'imurmurhash'
 import {client} from './lib/sanity'
 
 const ROUTING_QUERY = `*[
@@ -655,19 +695,27 @@ const ROUTING_QUERY = `*[
   )
 }`
 
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
+
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   
   // Get user's variant from cookie (set on first visit)
   let variantId = request.cookies.get('ab-variant')?.value
   
-  // Assign new users to a variant randomly
-  if (!variantId) {
-    variantId = Math.random() > 0.5 ? 'control' : 'variant-a'
-  }
-  
   const response = NextResponse.next()
-  response.cookies.set('ab-variant', variantId, { maxAge: 60 * 60 * 24 * 30 }) // 30 days
+
+  if (!variantId) {
+    const userId =
+      getUserIdFromSession(request) ?? // Implement: return session?.user?.id etc.
+      request.cookies.get('ab-user-id')?.value ??
+      v4()
+    variantId = MurmurHash3(userId).result() % 2 ? 'control' : 'variant-a'
+    if (!getUserIdFromSession(request) && !request.cookies.get('ab-user-id')?.value) {
+      response.cookies.set('ab-user-id', userId, { maxAge: COOKIE_MAX_AGE, path: '/' })
+    }
+  }
+  response.cookies.set('ab-variant', variantId, { maxAge: COOKIE_MAX_AGE, path: '/' })
 
   // Query for URL routing experiments
   const data = await client.fetch(ROUTING_QUERY, {
@@ -681,7 +729,7 @@ export async function proxy(request: NextRequest) {
     url.pathname = data.route
     const rewrite = NextResponse.rewrite(url)
     // Preserve the cookie on the rewrite response
-    rewrite.cookies.set('ab-variant', variantId, { maxAge: 60 * 60 * 24 * 30 })
+    rewrite.cookies.set('ab-variant', variantId, { maxAge: COOKIE_MAX_AGE, path: '/' })
     return rewrite
   }
 
