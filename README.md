@@ -569,6 +569,8 @@ export function proxy(request: NextRequest) {
 ```
 
 > **Tip:** Install with `npm install uuid imurmurhash`. When a user logs in, update the `ab-user-id` cookie to their real user ID so variant assignment stays consistent across sessions.
+> >
+> **Auth integration:** Implement `getUserIdFromSession(request)` to return the logged-in user's ID (e.g. `getServerSession()?.user?.id` with NextAuth). If your app has no auth, leave it as a stub that returns `undefined` so anonymous users get a UUID-based assignment.
 
 ### Reading Variants in Page Components
 
