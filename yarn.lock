@@ -4024,10 +4024,10 @@
     rxjs "^7.8.2"
     zustand "^5.0.4"
 
-"@sanity/semantic-release-preset@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@sanity/semantic-release-preset/-/semantic-release-preset-5.0.0.tgz#131c4d6fca416edc178030135dbed2b2213fd946"
-  integrity sha512-2lCuU57OZW6WY7O8d4vjbpghQIc9lnxS9+dLnzrBYh8e6pA467DxlCNum4NgDeDyHxNh9HGXNalXEWJz8tec+A==
+"@sanity/semantic-release-preset@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@sanity/semantic-release-preset/-/semantic-release-preset-6.0.0.tgz#1ff9066d5474bb149fd50efb821890bb1998495c"
+  integrity sha512-iw2aS0w2iVgVVw0IKRry3kUpuE9f5YlFFkKqribNkCzCOvzZcCFuXVIDUaijn3netjJIbQWR6XdqNAI1ifKkYg==
   dependencies:
     "@semantic-release/changelog" "^6.0.3"
     "@semantic-release/exec" "^6.0.3"

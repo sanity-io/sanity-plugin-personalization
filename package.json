@@ -67,7 +67,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@sanity/pkg-utils": "^6.13.4",
     "@sanity/plugin-kit": "^4.0.19",
-    "@sanity/semantic-release-preset": "^5.0.0",
+    "@sanity/semantic-release-preset": "^6.0.0",
     "@types/react": "^18.3.23",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
