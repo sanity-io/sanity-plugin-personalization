@@ -40,7 +40,7 @@ jobs:
     name: Lint & Build
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           cache: npm
           node-version: lts/*
@@ -112,7 +112,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           cache: npm
           node-version: lts/*
